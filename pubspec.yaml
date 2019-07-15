@@ -1,0 +1,36 @@
+name: Doit
+description: A new Flutter application.
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  cupertino_icons: ^0.1.2
+  data_plugin: ^0.0.9
+  fluttertoast: ^2.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+
+flutter:
+  uses-material-design: true
+  assets:
+    - images/user.png
+    - images/login_bg.png
+    - images/do_it.png
+    - images/img_0.png
+    - images/img_1.png
+    - images/img_2.png
+
+
+
