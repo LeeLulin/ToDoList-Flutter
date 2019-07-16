@@ -6,6 +6,9 @@ part of 'user.dart';
 
 User _$UserFromJson(Map<String, dynamic> json) {
   return User()
+    ..img = json['img'] == null
+        ? null
+        : BmobFile.fromJson(json['img'] as Map<String, dynamic>)
     ..createdAt = json['createdAt'] as String
     ..updatedAt = json['updatedAt'] as String
     ..objectId = json['objectId'] as String
@@ -19,12 +22,14 @@ User _$UserFromJson(Map<String, dynamic> json) {
     ..sessionToken = json['sessionToken'] as String
     ..age = json['age'] as int
     ..gender = json['gender'] as int
-    ..nickname = json['nickname'] as String
-    ..sentence = json['sentence'] as String;
+    ..objectId = json['objectId'] as String
+    ..nickName = json['nickName'] as String
+    ..autograph = json['autograph'] as String;
 
 }
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
+  'img': instance.img,
   'createdAt': instance.createdAt,
   'updatedAt': instance.updatedAt,
   'objectId': instance.objectId,
@@ -38,6 +43,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
   'sessionToken': instance.sessionToken,
   'age': instance.age,
   'gender': instance.gender,
-  'nickname': instance.nickname,
-  'sentence': instance.sentence
+  'objectId': instance.objectId,
+  'nickName': instance.nickName,
+  'autograph': instance.autograph
 };

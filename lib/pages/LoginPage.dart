@@ -5,6 +5,7 @@ import 'package:data_plugin/bmob/table/bmob_user.dart';
 import 'package:data_plugin/bmob/response/bmob_error.dart';
 import 'package:data_plugin/utils/dialog_util.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   static String tag = 'login-page';
@@ -70,7 +71,8 @@ class _LoginPageState extends State<LoginPage> {
         child: new MaterialButton(
           shape: RoundedRectangleBorder(
               side: BorderSide.none,
-              borderRadius: BorderRadius.all(Radius.circular(32.0))),
+              borderRadius: BorderRadius.all(Radius.circular(32.0))
+          ),
           minWidth: 220.0,
           height: 45.0,
           elevation: 5.0,
@@ -83,24 +85,28 @@ class _LoginPageState extends State<LoginPage> {
             print(_username);
             if(_username != null && _password != null){
               bmobUserRegister.login().then((BmobUser bmobUser) {
-//              showSuccess(context, bmobUser.getObjectId() + "\n" + bmobUser.username);
-//              Navigator.of(context).pushNamed(HomePage.tag);
 
+              print("username: " + bmobUser.username);
                 Fluttertoast.showToast(
                   msg: "登陆成功",
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.BOTTOM,
                   timeInSecForIos: 1,
                 );
-                Navigator.of(context).pushNamedAndRemoveUntil(HomePage.tag, (route) => route == null);
+                print("用户ObjectId: "+ bmobUser.getObjectId());
+                saveUserInfo(bmobUser.getObjectId());
+                Navigator.of(context).pop("sucess");
+
               }).catchError((e) {
+
                 Fluttertoast.showToast(
                   msg: "账号或密码不正确！",
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.BOTTOM,
                   timeInSecForIos: 1,
                 );
-//                showError(context, BmobError.convert(e).error);
+                print(BmobError.convert(e).error);
+
               });
 
             } else{
@@ -195,6 +201,13 @@ class _LoginPageState extends State<LoginPage> {
             ),
     );
 
+  }
+  saveUserInfo(String ObjectId) async{
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setString("ObjectId", ObjectId);
+    sp.setString("username", _username);
+    sp.setString("password", _password);
+    sp.setString("isLogin", "login");
   }
 }
 

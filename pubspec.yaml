@@ -11,10 +11,13 @@ dependencies:
   flutter:
     sdk: flutter
 
+  data_plugin:
+    path: plugins/data_plugin
 
   cupertino_icons: ^0.1.2
-  data_plugin: ^0.0.9
+#  data_plugin: ^0.0.12
   fluttertoast: ^2.1.1
+  shared_preferences: ^0.5.1+1
 
 dev_dependencies:
   flutter_test:
