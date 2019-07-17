@@ -4,14 +4,28 @@ PODS:
   - Flutter (1.0.0)
   - fluttertoast (0.0.2):
     - Flutter
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
+  - path_provider (0.0.1):
+    - Flutter
   - shared_preferences (0.0.1):
     - Flutter
+  - sqflite (0.0.1):
+    - Flutter
+    - FMDB (~> 2.7.2)
 
 DEPENDENCIES:
   - data_plugin (from `.symlinks/plugins/data_plugin/ios`)
   - Flutter (from `.symlinks/flutter/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - sqflite (from `.symlinks/plugins/sqflite/ios`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - FMDB
 
 EXTERNAL SOURCES:
   data_plugin:
@@ -20,14 +34,21 @@ EXTERNAL SOURCES:
     :path: ".symlinks/flutter/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
+  sqflite:
+    :path: ".symlinks/plugins/sqflite/ios"
 
 SPEC CHECKSUMS:
   data_plugin: 718d6550a02b30410748b3b7711ee393933070e6
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
   shared_preferences: 1feebfa37bb57264736e16865e7ffae7fc99b523
+  sqflite: ff1d9da63c06588cc8d1faf7256d741f16989d5a
 
 PODFILE CHECKSUM: ebd43b443038e611b86ede96e613bd6033c49497
 

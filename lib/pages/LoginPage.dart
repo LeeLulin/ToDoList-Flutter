@@ -207,7 +207,7 @@ class _LoginPageState extends State<LoginPage> {
     sp.setString("ObjectId", ObjectId);
     sp.setString("username", _username);
     sp.setString("password", _password);
-    sp.setString("isLogin", "login");
+    sp.setBool("isLogin", true);
   }
 }
 

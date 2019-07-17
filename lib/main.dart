@@ -5,6 +5,8 @@ import 'package:Doit/pages/RegisterPage.dart';
 import 'package:data_plugin/bmob/bmob.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'db/DatabaseHelper.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
