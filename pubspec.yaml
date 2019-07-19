@@ -11,6 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  flutter_localizations:
+    sdk: flutter
+
   data_plugin:
     path: plugins/data_plugin
 
@@ -22,8 +25,8 @@ dependencies:
   path_provider: ^1.1.2
   sqflite: ^1.1.6
 
-  flutter_localizations:
-    sdk: flutter
+
+
 
 dev_dependencies:
   flutter_test:

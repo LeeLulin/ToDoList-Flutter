@@ -194,7 +194,6 @@ class _NewTodoPageState extends State<NewTodoPage>{
     var picker = await showTimePicker(context: context,
         initialTime: TimeOfDay.now());
     setState(() {
-      int remindTime = picker;
       time = picker.toString().substring(10,15);
       print(time);
     });

@@ -140,7 +140,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               child: new ListTile(
                 leading: new CircleAvatar(child: new Icon(Icons.access_time)),
                 title: new Text('番茄时钟'),
-                onTap: () => {},
+                onTap: () {
+
+                },
               ),
             ),
             new ClipRect(
@@ -206,7 +208,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               }
 
             });
-            print("JumpLogin");
+            print("Jump to NewTodoPage");
 
           },
           tooltip: '悬浮按钮',

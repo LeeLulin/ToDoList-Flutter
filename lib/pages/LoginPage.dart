@@ -1,9 +1,8 @@
+import 'package:Doit/widget/AnimatedLoginButton.dart';
 import 'package:flutter/material.dart';
-import 'package:Doit/pages/HomePage.dart';
 import 'package:Doit/pages/RegisterPage.dart';
 import 'package:data_plugin/bmob/table/bmob_user.dart';
 import 'package:data_plugin/bmob/response/bmob_error.dart';
-import 'package:data_plugin/utils/dialog_util.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,9 +11,11 @@ class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => new _LoginPageState();
 }
-
+LoginErrorMessageController loginErrorMessageController=LoginErrorMessageController();
+bool loginSuccess;
 class _LoginPageState extends State<LoginPage> {
   String _username, _password;
+
   @override
   Widget build(BuildContext context) {
 
@@ -64,6 +65,67 @@ class _LoginPageState extends State<LoginPage> {
         ),
 
       ),
+    );
+
+
+
+    var login = new AnimatedLoginButton(
+        loginErrorMessageController: loginErrorMessageController,
+        loginTip: '登录',
+        onTap: () async {
+          try{
+            FocusScope.of(context).requestFocus(FocusNode());
+            print(_username);
+
+            if(_username == null && _password == null ){
+
+              loginErrorMessageController.showErrorMessage("请输入账号或密码");
+
+              Fluttertoast.showToast(
+                msg: "账号或密码不能为空！",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIos: 1,
+              );
+            } else {
+
+              BmobUser bmobUserRegister = BmobUser();
+              bmobUserRegister.username = _username;
+              bmobUserRegister.password = _password;
+              await bmobUserRegister.login().then((BmobUser bmobUser) {
+                loginSuccess = true;
+                print("username: " + bmobUser.username);
+
+                print("用户ObjectId: "+ bmobUser.getObjectId());
+                saveUserInfo(bmobUser.getObjectId());
+
+              }).catchError((e) {
+                loginSuccess = false;
+                print(BmobError.convert(e).error);
+
+              });
+
+              if (loginSuccess == true) {
+                Fluttertoast.showToast(
+                  msg: "登陆成功",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIos: 1,
+                );
+                Navigator.of(context).pop("sucess");
+              } else {
+                loginErrorMessageController.showErrorMessage("账号或密码错误");
+              }
+
+
+            }
+
+          } catch (e){
+            print(e.toString());
+          }
+
+          },
+
     );
 
     final loginButton = new Padding(
@@ -192,7 +254,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(height: 40.0),
                         userInfo,
                         SizedBox(height: 24.0,),
-                        loginButton,
+                        login,
                         skipLogin,
                       ],
                     ),
@@ -209,6 +271,7 @@ class _LoginPageState extends State<LoginPage> {
     sp.setString("password", _password);
     sp.setBool("isLogin", true);
   }
+
 }
 
 
