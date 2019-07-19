@@ -1,4 +1,5 @@
 import 'package:data_plugin/bmob/response/bmob_handled.dart';
+import 'package:data_plugin/bmob/type/bmob_file.dart';
 
 import 'bmob_object.dart';
 import 'package:data_plugin/bmob/bmob_dio.dart';
@@ -20,6 +21,13 @@ class BmobUser extends BmobObject {
   String mobilePhoneNumber;
   bool mobilePhoneNumberVerified;
   String sessionToken;
+  int age;
+  int gender;
+  String objectId;
+  String nickName;
+  String autograph;
+  BmobFile img;
+  int total;
 
   BmobUser();
 

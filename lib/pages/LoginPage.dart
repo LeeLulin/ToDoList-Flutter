@@ -69,24 +69,34 @@ class _LoginPageState extends State<LoginPage> {
 
 
 
-    var login = new AnimatedLoginButton(
+    var loginButton = new Container(
+      decoration: new BoxDecoration(
+
+        borderRadius: new BorderRadius.circular((20.0)), // 圆角度
+        boxShadow: [BoxShadow(color: Colors.black12, offset: Offset(1.0, 2.0), blurRadius: 1.0, spreadRadius: 1.0),],
+
+      ),
+      child: new AnimatedLoginButton(
         loginErrorMessageController: loginErrorMessageController,
         loginTip: '登录',
+        buttonColorNormal: Colors.blue[300],
+        buttonColorError: Colors.pink,
+        textStyleNormal: TextStyle(
+          color: Colors.white,
+          fontSize: 18.0,
+        ),
+        textStyleError: TextStyle(
+          color: Colors.white,
+          fontSize: 18.0,
+        ),
         onTap: () async {
           try{
             FocusScope.of(context).requestFocus(FocusNode());
             print(_username);
 
-            if(_username == null && _password == null ){
-
+            if(_username == null || _password == null ){
               loginErrorMessageController.showErrorMessage("请输入账号或密码");
 
-              Fluttertoast.showToast(
-                msg: "账号或密码不能为空！",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIos: 1,
-              );
             } else {
 
               BmobUser bmobUserRegister = BmobUser();
@@ -94,8 +104,7 @@ class _LoginPageState extends State<LoginPage> {
               bmobUserRegister.password = _password;
               await bmobUserRegister.login().then((BmobUser bmobUser) {
                 loginSuccess = true;
-                print("username: " + bmobUser.username);
-
+                print("账号: " + bmobUser.username);
                 print("用户ObjectId: "+ bmobUser.getObjectId());
                 saveUserInfo(bmobUser.getObjectId());
 
@@ -124,74 +133,12 @@ class _LoginPageState extends State<LoginPage> {
             print(e.toString());
           }
 
-          },
+        },
 
+      ),
     );
 
-    final loginButton = new Padding(
-      padding: new EdgeInsets.symmetric(vertical: 16.0),
-        child: new MaterialButton(
-          shape: RoundedRectangleBorder(
-              side: BorderSide.none,
-              borderRadius: BorderRadius.all(Radius.circular(32.0))
-          ),
-          minWidth: 220.0,
-          height: 45.0,
-          elevation: 5.0,
-          color: Colors.blue[300],
-          onPressed: (){
-            FocusScope.of(context).requestFocus(FocusNode());
-            BmobUser bmobUserRegister = BmobUser();
-            bmobUserRegister.username = _username;
-            bmobUserRegister.password = _password;
-            print(_username);
-            if(_username != null && _password != null){
-              bmobUserRegister.login().then((BmobUser bmobUser) {
 
-              print("username: " + bmobUser.username);
-                Fluttertoast.showToast(
-                  msg: "登陆成功",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIos: 1,
-                );
-                print("用户ObjectId: "+ bmobUser.getObjectId());
-                saveUserInfo(bmobUser.getObjectId());
-                Navigator.of(context).pop("sucess");
-
-              }).catchError((e) {
-
-                Fluttertoast.showToast(
-                  msg: "账号或密码不正确！",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIos: 1,
-                );
-                print(BmobError.convert(e).error);
-
-              });
-
-            } else{
-              Fluttertoast.showToast(
-                msg: "账号或密码不能为空！",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIos: 1,
-              );
-            }
-
-
-          },
-
-          child: new Text(
-            '登录',
-            style: new TextStyle(
-                color: Colors.white,
-                fontSize: 20.0),
-          ),
-        ),
-
-    );
 
     final skipLogin = new FlatButton(
       onPressed: (){
@@ -202,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
         '跳过',
         style: new TextStyle(
           color: Colors.black54,
-          fontSize: 20.0,
+          fontSize: 16.0,
           decoration: TextDecoration.underline,),),
     );
 
@@ -253,8 +200,9 @@ class _LoginPageState extends State<LoginPage> {
                         logo,
                         SizedBox(height: 40.0),
                         userInfo,
+                        SizedBox(height: 30.0,),
+                        loginButton,
                         SizedBox(height: 24.0,),
-                        login,
                         skipLogin,
                       ],
                     ),

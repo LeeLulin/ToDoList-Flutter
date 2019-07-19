@@ -1,3 +1,11 @@
+import 'dart:io';
+
+import 'package:Doit/bean/user.dart';
+import 'package:Doit/widget/AnimatedLoginButton.dart';
+import 'package:data_plugin/bmob/bmob_file_manager.dart';
+import 'package:data_plugin/bmob/response/bmob_saved.dart';
+import 'package:data_plugin/bmob/response/bmob_updated.dart';
+import 'package:data_plugin/bmob/type/bmob_file.dart';
 import 'package:flutter/material.dart';
 import 'package:data_plugin/bmob/table/bmob_user.dart';
 import 'package:data_plugin/bmob/response/bmob_error.dart';
@@ -10,9 +18,12 @@ class RegisterPage extends StatefulWidget {
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
-
+LoginErrorMessageController loginErrorMessageController=LoginErrorMessageController();
+bool registerSuccess;
+String objectId;
+String _username, _password;
 class _RegisterPageState extends State<RegisterPage> {
-  String _username, _password;
+
   @override
   Widget build(BuildContext context) {
 
@@ -21,11 +32,7 @@ class _RegisterPageState extends State<RegisterPage> {
       child: new CircleAvatar(
         backgroundColor: Colors.transparent,
         radius: 48.0,
-        child: new Text("注册",
-        style: new TextStyle(
-          fontSize: 45.0,
-          color: Colors.white,
-        ),),
+        child: new Image.asset('images/do_it.png'),
       ),
     );
 
@@ -42,7 +49,7 @@ class _RegisterPageState extends State<RegisterPage> {
           child: new Column(
             children: <Widget>[
               TextField(
-                keyboardType: TextInputType.text,
+                keyboardType: TextInputType.emailAddress,
                 autofocus: false,
                 decoration: new InputDecoration(
                   labelText: '请输入要注册的账号',
@@ -68,61 +75,81 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
 
+    var registerButton = new Container(
+      decoration: new BoxDecoration(
 
-    final loginButton = new Padding(
-      padding: new EdgeInsets.symmetric(vertical: 16.0),
-      child: new MaterialButton(
-        shape: RoundedRectangleBorder(
-            side: BorderSide.none,
-            borderRadius: BorderRadius.all(Radius.circular(32.0))),
-        minWidth: 220.0,
-        height: 45.0,
-        elevation: 5.0,
-        color: Colors.blue[300],
-        onPressed: (){
-          FocusScope.of(context).requestFocus(FocusNode());
-          BmobUser bmobUserRegister = BmobUser();
-          bmobUserRegister.username = _username;
-          bmobUserRegister.password = _password;
+        borderRadius: new BorderRadius.circular((20.0)), // 圆角度
+        boxShadow: [BoxShadow(color: Colors.black12, offset: Offset(1.0, 2.0), blurRadius: 1.0, spreadRadius: 1.0),],
 
-          print(_username);
-          if(_username != null && _password != null){
-            bmobUserRegister.register().then((BmobRegistered data) {
-              Fluttertoast.showToast(
-                msg: "注册成功",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIos: 1,
-              );
-            }).catchError((e) {
-              Fluttertoast.showToast(
-                msg: "注册失败",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIos: 1,
-              );
-            });
-          } else{
-            Fluttertoast.showToast(
-              msg: "账号或密码不能为空！",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIos: 1,
-            );
+      ),
+      child: new AnimatedLoginButton(
+        loginErrorMessageController: loginErrorMessageController,
+        loginTip: '注册',
+        buttonColorNormal: Colors.blue[300],
+        buttonColorError: Colors.pink,
+        textStyleNormal: TextStyle(
+          color: Colors.white,
+          fontSize: 18.0,
+        ),
+        textStyleError: TextStyle(
+          color: Colors.white,
+          fontSize: 18.0,
+        ),
+        onTap: () async {
+          try{
+            FocusScope.of(context).requestFocus(FocusNode());
+            print(_username);
+
+            if(_username == null || _password == null ){
+
+              loginErrorMessageController.showErrorMessage("账号或密码为空");
+
+            } else {
+
+              BmobUser user = BmobUser();
+              user.username = _username;
+              user.password = _password;
+              user.nickName = _username;
+              user.autograph = "个性签名";
+              user.total = 0;
+              await user.save().then((BmobSaved data) {
+                registerSuccess = true;
+                  //插入用户数据
+
+              }).catchError((e) {
+                registerSuccess = false;
+                print(BmobError.convert(e).error);
+
+              });
+
+//              updateUserInfo();
+
+
+
+              if (registerSuccess == true) {
+                Fluttertoast.showToast(
+                  msg: "注册成功",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIos: 1,
+                );
+                Navigator.pop(context);
+              } else {
+                loginErrorMessageController.showErrorMessage("注册失败");
+              }
+
+
+            }
+
+          } catch (e){
+            print(e.toString());
           }
-
 
         },
 
-        child: new Text(
-          '注册',
-          style: new TextStyle(
-              color: Colors.white,
-              fontSize: 20.0),
-        ),
       ),
-
     );
+
 
 
     return new Container(
@@ -171,8 +198,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 logo,
                 SizedBox(height: 40.0),
                 userInfo,
-                SizedBox(height: 24.0,),
-                loginButton,
+                SizedBox(height: 30.0,),
+                registerButton,
               ],
             ),
           ),
@@ -180,5 +207,18 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
   }
+}
+
+updateUserInfo() async{
+  BmobUser user = BmobUser();
+  user.objectId = objectId;
+  user.nickName = _username;
+  user.autograph = "个性签名";
+  user.total = 0;
+  await user.update().then((BmobUpdated updated){
+    print("更新成功");
+  }).catchError((e){
+    print(BmobError.convert(e).error);
+  });
 }
 

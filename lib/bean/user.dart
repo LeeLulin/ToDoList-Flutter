@@ -16,6 +16,7 @@ class User extends BmobUser {
   String nickName;
   String autograph;
   BmobFile img;
+  int total;
 
   User();
 

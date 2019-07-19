@@ -231,7 +231,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         User user = User.fromJson(data);
         nickName = user.nickName;
         autograph = user.autograph;
-        path = user.img.url.toString();
+        if(user.img.url.toString() != null){
+          path = user.img.url.toString();
+        }
         print("昵称："+nickName+" 个性签名: "+autograph+" 头像url：" + path);
       }).catchError((e) {
         print("Error: " + BmobError.convert(e).error);
