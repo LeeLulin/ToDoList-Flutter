@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
                 keyboardType: TextInputType.emailAddress,
                 autofocus: false,
                 decoration: new InputDecoration(
-                  hintText: '账号',
+                  labelText: '账号',
                   border: InputBorder.none,
                 ),
                 onChanged: (String value) => _username = value,
@@ -54,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
                 autofocus: false,
                 obscureText: true,
                 decoration:  new InputDecoration(
-                  hintText: '密码',
+                  labelText: '密码',
                   border: InputBorder.none,
                 ),
                 onChanged: (String value) => _password = value,

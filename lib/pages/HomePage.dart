@@ -3,6 +3,7 @@ import 'package:Doit/bean/user.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:data_plugin/bmob/bmob_query.dart';
 import 'package:data_plugin/bmob/response/bmob_error.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:Doit/widget/TodoView.dart';
 
@@ -11,6 +12,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'LoginPage.dart';
+import 'NewTodoPage.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -191,9 +193,21 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       floatingActionButton: new Builder(builder: (BuildContext context){
         return new FloatingActionButton(
           onPressed: () {
-            Scaffold.of(context).showSnackBar(new SnackBar(
-              content: new Text("点击了按钮"),
-            ));
+            Navigator.push<String>(context, new CupertinoPageRoute(builder: (BuildContext context){
+
+              return new NewTodoPage();
+
+            })).then( (String result){
+              //处理代码
+              if(result != null){
+                setState(() {
+                  getUserInfo();
+                });
+              }
+
+            });
+            print("JumpLogin");
+
           },
           tooltip: '悬浮按钮',
           child: new Icon(Icons.add),

@@ -45,7 +45,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 keyboardType: TextInputType.text,
                 autofocus: false,
                 decoration: new InputDecoration(
-                  hintText: '账号',
+                  labelText: '请输入要注册的账号',
                   border: InputBorder.none,
                 ),
                 onChanged: (String value) => _username = value,
@@ -56,7 +56,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 autofocus: false,
                 obscureText: true,
                 decoration:  new InputDecoration(
-                  hintText: '密码',
+                  labelText: '请输入要账号密码',
                   border: InputBorder.none,
                 ),
                 onChanged: (String value) => _password = value,
@@ -142,10 +142,10 @@ class _RegisterPageState extends State<RegisterPage> {
           appBar: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () {
-              //返回代码
-              Navigator.pop(context);
-            }),
+//            leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () {
+//              //返回代码
+//              Navigator.pop(context);
+//            }),
 
 //            actions: <Widget>[
 //              new FlatButton(
