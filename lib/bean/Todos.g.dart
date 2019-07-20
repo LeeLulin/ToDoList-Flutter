@@ -5,10 +5,6 @@ part of 'Todos.dart';
 // **************************************************************************
 Todos _$TodosFromJson(Map<String, dynamic> json) {
   return Todos()
-//    ..user = json['user'] == null
-//        ? null
-//        : User.fromJson(json['user'] as Map<String, dynamic>)
-//    ..user = json['user'] as User
     ..title = json['title'] as String
     ..desc = json['desc'] as String
     ..objectId = json['objectId'] as String
@@ -18,12 +14,15 @@ Todos _$TodosFromJson(Map<String, dynamic> json) {
     ..remindTimeNoDay = json['remindTimeNoDay'] as int
     ..imgId = json['imgId'] as int
     ..isRepeat = json['isRepeat'] as int
-    ..isAlerted = json['isAlerted'] as int;
+    ..isAlerted = json['isAlerted'] as int
+    ..user = json['author'] == null
+        ? null
+        : BmobUser.fromJson(json['author'] as Map<String, dynamic>);
 
 }
 
 Map<String, dynamic> _$TodoToJson(Todos instance) => <String, dynamic>{
-//  'user': instance.user,
+  'user': instance.user,
   'title': instance.title,
   'desc': instance.desc,
   'objectId': instance.objectId,

@@ -1,13 +1,12 @@
 import 'package:Doit/bean/Todos.dart';
 import 'package:Doit/bean/user.dart';
+import 'package:Doit/db/DatabaseHelper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:data_plugin/bmob/bmob_query.dart';
 import 'package:data_plugin/bmob/response/bmob_error.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:Doit/widget/TodoView.dart';
 
-import 'package:Doit/model/todo.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,8 +33,13 @@ String username;
 String password;
 bool isLogin = false;
 
+
+
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin{
 
+  var _items = [];
+  int localTodos;
+  var db = DatabaseHelper();
   TabController _tabController;
 //  final List<Todos> _allCities = Todos.allTodos();
 
@@ -48,17 +52,210 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   void initState() {
     super.initState();
+
+      getUserInfo();
+      getTodoFromBmob();
+
+
     _tabController = new TabController(vsync: this, length: 2);
 
   }
 
+  void getUserInfo() async{
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    objectId = sp.get("ObjectId");
+    isLogin = sp.get("login");
+    if(objectId != null){
+      BmobQuery<User> bmobQuery = BmobQuery();
+      bmobQuery.queryObject(objectId).then((data) {
+
+        setState(() {
+          User user = User.fromJson(data);
+          nickName = user.nickName;
+          autograph = user.autograph;
+          if(user.img.url.toString() != null){
+            path = user.img.url.toString();
+          }
+
+        });
+
+
+        print("昵称："+nickName+" 个性签名: "+autograph+" 头像url：" + path);
+      }).catchError((e) {
+        print("Error: " + BmobError.convert(e).error);
+      });
+      sp.setString("nickname", nickName);
+      sp.setString("autograph", autograph);
+      sp.setString("userImg", path);
+
+    }
+  }
+
+  ///查询待办事项
+  void getTodoFromBmob() async {
+    localTodos = await db.getCount();
+//    db.clearTodo();
+    print("localTodo: " + localTodos.toString() );
+//    db.close();
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    String objectId = sp.get("ObjectId");
+    BmobQuery<Todos> query = BmobQuery();
+    query.addWhereEqualTo("user", objectId);
+    query.queryObjects().then((List<dynamic> data) {
+      List<Todos> netTodo = data.map((i) => Todos.fromJson(i)).toList();
+      print("查询到 " + netTodo.length.toString() + " 条数据");
+      int index = 0;
+      for (Todos todo in netTodo) {
+        index++;
+        if (todo != null) {
+          print(index);
+          print(todo.objectId);
+          print(todo.title);
+          print(todo.desc);
+
+        }
+      }
+//      _items = netTodo;
+        setState(() {
+          _items = netTodo;
+        });
+
+    }).catchError((e) {
+      print(BmobError.convert(e).error);
+    });
+
+
+
+
+
+  }
+
+  Widget todoListView(BuildContext context) {
+    return new Scaffold(
+      body:
+      new ListView.builder(
+          physics: new BouncingScrollPhysics(),
+          itemCount: _items.length,
+          itemBuilder: todoItemView
+      ),
+    );
+  }
+
+
+  Widget todoItemView(BuildContext context, int index) {
+    Todos model = this._items[_items.length-1-index];
+    return new Stack(
+      children: <Widget>[
+        new Padding(
+          padding: const EdgeInsets.only(left: 40.0, right: 10, bottom: 5),
+          child: new SizedBox(
+            height: 95.0,
+            width: double.infinity,
+
+            child: new Card(
+
+              elevation: 5.0,
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8.0))
+              ),
+
+              child: new Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  image: DecorationImage(
+                    image: AssetImage("images/img_0.png"),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+
+                child: new Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    new ListTile(
+
+                      title: new Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                        children: <Widget>[
+                          new Text(
+                            " ${model.title}",
+                            style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          new Text(
+                            " ${model.desc}",
+                            style: TextStyle(
+                                fontSize: 15.0,
+                                fontWeight: FontWeight.bold
+                            ),
+                          ),
+
+                          new Text(
+                            "${model.date} ${model.time}",
+                            style: TextStyle(
+                              fontSize: 11.0,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      onTap: () {
+//                        showSnackBar(context, );
+                      },
+                    )
+
+                  ],
+
+                ),
+
+
+              ),
+            ),
+          ),
+
+        ),
+
+        Positioned(
+          left: 20.0,
+          child: Container(
+            height: 36.0,
+            width: 2.0,
+            color: Colors.black,
+          ),
+        ),
+
+        Positioned(
+          top: 36.0,
+          left: 13.0,
+          child: Container(
+            height: 16.0,
+            width: 16.0,
+            decoration: BoxDecoration(
+              border: new Border.all(color: Colors.black, width: 2.0),
+              shape: BoxShape.circle,
+            ),
+          ),
+        ),
+
+        Positioned(
+          top: 52.0,
+          left: 20.0,
+          child: Container(
+            height: 48.0,
+            width: 2.0,
+            color: Colors.black,
+          ),
+        ),
+
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    //加载用户信息
-    setState(() {
-      getUserInfo();
-    });
 
     return Scaffold(
       appBar: new AppBar(
@@ -100,31 +297,16 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 ),
                 ///点击头像登录
                 onTap: (){
-//                  if( isLogin == true ){
-                    Navigator.push<String>(context, new MaterialPageRoute(builder: (BuildContext context){
+                    Navigator.push<String>(context, new CupertinoPageRoute(builder: (BuildContext context){
 
                       return new LoginPage();
 
                     })).then( (String result){
-                      //处理代码
-                      if(result != null){
-                        setState(() {
-                          getUserInfo();
-                        });
-                      }
+
+                      getUserInfo();
+                      getTodoFromBmob();
 
                     });
-                    print("JumpLogin");
-
-
-//                  } else{
-//                    Fluttertoast.showToast(
-//                      msg: "已登录",
-//                      toastLength: Toast.LENGTH_SHORT,
-//                      gravity: ToastGravity.BOTTOM,
-//                      timeInSecForIos: 1,
-//                    );
-//                  }
 
                 },
               ),
@@ -184,31 +366,27 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         controller: _tabController,
         children: <Widget>[
           new Center(
-              child: TodoListView()
+              child: todoListView(context),
           ),
 
           new Center(
-              child: new Text('番茄时钟')),
+              child: new Text('番茄时钟')
+          ),
         ],
       ),
 
-      floatingActionButton: new Builder(builder: (BuildContext context){
+      floatingActionButton: new Builder(builder: (context){
         return new FloatingActionButton(
-          onPressed: () {
-            Navigator.push<String>(context, new CupertinoPageRoute(builder: (BuildContext context){
+          onPressed: () async {
+
+            await Navigator.push<String>(context, new CupertinoPageRoute(builder: (context){
 
               return new NewTodoPage();
 
-            })).then( (String result){
-              //处理代码
-              if(result != null){
-                setState(() {
-                  getUserInfo();
-                });
-              }
-
+            })).then((String value){
+              getTodoFromBmob();
             });
-            print("Jump to NewTodoPage");
+
 
           },
           tooltip: '悬浮按钮',
@@ -221,29 +399,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   }
 
-  getUserInfo() async{
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    objectId = sp.get("ObjectId");
-    isLogin = sp.get("login");
-    if(objectId != null){
-      BmobQuery<User> bmobQuery = BmobQuery();
-      bmobQuery.queryObject(objectId).then((data) {
-        User user = User.fromJson(data);
-        nickName = user.nickName;
-        autograph = user.autograph;
-        if(user.img.url.toString() != null){
-          path = user.img.url.toString();
-        }
-        print("昵称："+nickName+" 个性签名: "+autograph+" 头像url：" + path);
-      }).catchError((e) {
-        print("Error: " + BmobError.convert(e).error);
-      });
-      sp.setString("nickname", nickName);
-      sp.setString("autograph", autograph);
-      sp.setString("userImg", path);
 
-    }
-  }
+
+
 
 //  logOut() async{
 //    isLogin = false;
@@ -251,8 +409,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 //    SharedPreferences sp = await SharedPreferences.getInstance();
 //    sp.setBool("isLogin", false);
 //  }
-}
 
+}
 
 
 

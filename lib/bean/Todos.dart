@@ -1,4 +1,5 @@
 import 'package:Doit/bean/user.dart';
+import 'package:data_plugin/bmob/table/bmob_object.dart';
 import 'package:data_plugin/bmob/table/bmob_user.dart';
 import 'package:data_plugin/bmob/type/bmob_date.dart';
 import 'package:data_plugin/bmob/type/bmob_file.dart';
@@ -7,7 +8,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'Todos.g.dart';
 
 @JsonSerializable()
-class Todos extends BmobUser {
+class Todos extends BmobObject {
   factory Todos.fromJson(Map<String, dynamic> json) => _$TodosFromJson(json);
 
   Todos.fromSql(Map<String, dynamic> json) {
@@ -67,7 +68,7 @@ class Todos extends BmobUser {
   int remindTime,remindTimeNoDay;
   int id,isAlerted,isRepeat,imgId;
   BmobDate bmobDate;
-//  User user;
+  BmobUser user;
   String dbObjectId;
 
   Todos();
