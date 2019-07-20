@@ -1,6 +1,6 @@
 # Doit 
 
-A new Flutter application.
+Doit Flutter版本
 
 ## Getting Started
 
