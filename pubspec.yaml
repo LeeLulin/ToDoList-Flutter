@@ -31,7 +31,12 @@ dependencies:
   sliver_fab: ^1.0.0
   #日期选择器
   flutter_cupertino_date_picker: ^1.0.8
+  #屏幕适配
+  flutter_screenutil: ^0.5.3
 
+  auto_size:
+    git:
+      url: git://github.com/flutterchina/auto_size.git
 
 
 
@@ -50,6 +55,7 @@ flutter:
     - images/img_0.png
     - images/img_1.png
     - images/img_2.png
+    - images/app_icon.png
 
 
 

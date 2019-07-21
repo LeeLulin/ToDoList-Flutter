@@ -13,12 +13,14 @@ class LoginPage extends StatefulWidget {
 }
 LoginErrorMessageController loginErrorMessageController=LoginErrorMessageController();
 bool loginSuccess;
+bool isLogin = false ;
+bool isRemember  = false;
 class _LoginPageState extends State<LoginPage> {
   String _username, _password;
 
   @override
   Widget build(BuildContext context) {
-
+//    ScreenUtil.instance = ScreenUtil(width: 828, height: 1792)..init(context);
     final logo = new Hero(
       tag: 'hero',
       child: new CircleAvatar(
@@ -104,6 +106,7 @@ class _LoginPageState extends State<LoginPage> {
               bmobUserRegister.password = _password;
               await bmobUserRegister.login().then((BmobUser bmobUser) {
                 loginSuccess = true;
+                isLogin = true;
                 print("账号: " + bmobUser.username);
                 print("用户ObjectId: "+ bmobUser.getObjectId());
                 saveUserInfo(bmobUser.getObjectId());
@@ -200,6 +203,15 @@ class _LoginPageState extends State<LoginPage> {
                         logo,
                         SizedBox(height: 40.0),
                         userInfo,
+
+                        new Checkbox(
+                            value: isRemember,
+                          onChanged: (isChecked) {
+                            setState(() {
+                              isRemember = isChecked;
+                            });
+                          },
+                        ),
                         SizedBox(height: 30.0,),
                         loginButton,
                         SizedBox(height: 24.0,),
@@ -215,9 +227,11 @@ class _LoginPageState extends State<LoginPage> {
   saveUserInfo(String ObjectId) async{
     SharedPreferences sp = await SharedPreferences.getInstance();
     sp.setString("ObjectId", ObjectId);
-    sp.setString("username", _username);
-    sp.setString("password", _password);
-    sp.setBool("isLogin", true);
+    sp.setBool("isLogin", isLogin);
+    if(isRemember){
+      sp.setString("username", _username);
+      sp.setString("password", _password);
+    }
   }
 
 }

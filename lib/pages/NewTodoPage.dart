@@ -26,6 +26,7 @@ class _NewTodoPageState extends State<NewTodoPage>{
   int id,isAlerted,repeat,imgId;
 
   Widget build(BuildContext context) {
+//    ScreenUtil.instance = ScreenUtil(width: 828, height: 1792)..init(context);
     return Scaffold(
       body: new SliverFab(
           ///悬浮按钮
@@ -100,14 +101,13 @@ class _NewTodoPageState extends State<NewTodoPage>{
 
                       Divider(height:20.0,indent:0.0,color: Colors.white70,),
 
-                      new GestureDetector(
-                        behavior: HitTestBehavior.translucent,
+                      new InkWell(
                         child: new Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             new Row(
                               children: <Widget>[
-                                new Icon(Icons.date_range, size: 25.0,),
+                                new Icon(Icons.date_range, size: 25.0, color: Colors.black54),
                                 VerticalDivider(width:10.0,indent:0.0,color: Colors.transparent,),
                                 new Text("日期",
                                   style: TextStyle(fontSize: 20.0),
@@ -124,14 +124,13 @@ class _NewTodoPageState extends State<NewTodoPage>{
 
                       Divider(height:20.0,indent:0.0,color: Colors.black54),
 
-                      new GestureDetector(
-                        behavior: HitTestBehavior.translucent,
+                      new InkWell(
                         child: new Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             new Row(
                               children: <Widget>[
-                                new Icon(Icons.access_time, size: 25.0,),
+                                new Icon(Icons.access_time, size: 25.0, color: Colors.black54),
                                 VerticalDivider(width:10.0,indent:0.0,color: Colors.transparent,),
                                 new Text("时间",
                                   style: TextStyle(fontSize: 20.0),
@@ -154,7 +153,7 @@ class _NewTodoPageState extends State<NewTodoPage>{
                         children: <Widget>[
                           new Row(
                             children: <Widget>[
-                              new Icon(Icons.restore, size: 25.0,),
+                              new Icon(Icons.restore, size: 25.0, color: Colors.black54),
                               VerticalDivider(width:10.0,indent:0.0,color: Colors.transparent,),
                               new Text("重复提醒",
                                 style: TextStyle(fontSize: 20.0),

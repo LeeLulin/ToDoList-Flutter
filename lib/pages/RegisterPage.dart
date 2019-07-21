@@ -26,7 +26,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-
+//    ScreenUtil.instance = ScreenUtil(width: 828, height: 1792)..init(context);
     final logo = new Hero(
       tag: 'hero',
       child: new CircleAvatar(

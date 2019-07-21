@@ -4,8 +4,11 @@ import 'package:Doit/db/DatabaseHelper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:data_plugin/bmob/bmob_query.dart';
 import 'package:data_plugin/bmob/response/bmob_error.dart';
+import 'package:data_plugin/bmob/table/bmob_user.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,7 +44,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   int localTodos;
   var db = DatabaseHelper();
   TabController _tabController;
-//  final List<Todos> _allCities = Todos.allTodos();
 
 
   @override
@@ -53,18 +55,20 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   void initState() {
     super.initState();
 
-      getUserInfo();
-      getTodoFromBmob();
+    getUserInfo();
+
+    getTodoFromBmob();
 
 
     _tabController = new TabController(vsync: this, length: 2);
 
   }
 
+
   void getUserInfo() async{
     SharedPreferences sp = await SharedPreferences.getInstance();
     objectId = sp.get("ObjectId");
-    isLogin = sp.get("login");
+    isLogin = sp.get("isLogin");
     if(objectId != null){
       BmobQuery<User> bmobQuery = BmobQuery();
       bmobQuery.queryObject(objectId).then((data) {
@@ -130,14 +134,34 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   }
 
+
+
   Widget todoListView(BuildContext context) {
     return new Scaffold(
-      body:
-      new ListView.builder(
+      backgroundColor: Colors.white,
+      body: new ListView.builder(
+        primary: true,
           physics: new BouncingScrollPhysics(),
           itemCount: _items.length,
           itemBuilder: todoItemView
       ),
+      floatingActionButton: new FloatingActionButton(
+          onPressed: () async {
+
+            await Navigator.push<String>(super.context, new CupertinoPageRoute(builder: (context){
+
+              return new NewTodoPage();
+
+            })).then((String value){
+              getTodoFromBmob();
+            });
+
+
+          },
+          tooltip: '悬浮按钮',
+          child: new Icon(Icons.add),
+        ),
+
     );
   }
 
@@ -147,7 +171,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     return new Stack(
       children: <Widget>[
         new Padding(
-          padding: const EdgeInsets.only(left: 40.0, right: 10, bottom: 5),
+          padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 5.0 ),
           child: new SizedBox(
             height: 95.0,
             width: double.infinity,
@@ -218,48 +242,268 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
         ),
 
-        Positioned(
-          left: 20.0,
-          child: Container(
-            height: 36.0,
-            width: 2.0,
-            color: Colors.black,
-          ),
-        ),
-
-        Positioned(
-          top: 36.0,
-          left: 13.0,
-          child: Container(
-            height: 16.0,
-            width: 16.0,
-            decoration: BoxDecoration(
-              border: new Border.all(color: Colors.black, width: 2.0),
-              shape: BoxShape.circle,
-            ),
-          ),
-        ),
-
-        Positioned(
-          top: 52.0,
-          left: 20.0,
-          child: Container(
-            height: 48.0,
-            width: 2.0,
-            color: Colors.black,
-          ),
-        ),
+//        Positioned(
+//          left: 20.0,
+//          child: Container(
+//            height: 36.0,
+//            width: 2.0,
+//            color: Colors.black,
+//          ),
+//        ),
+//
+//        Positioned(
+//          top: 36.0,
+//          left: 13.0,
+//          child: Container(
+//            height: 16.0,
+//            width: 16.0,
+//            decoration: BoxDecoration(
+//              border: new Border.all(color: Colors.black, width: 2.0),
+//              shape: BoxShape.circle,
+//            ),
+//          ),
+//        ),
+//
+//        Positioned(
+//          top: 52.0,
+//          left: 20.0,
+//          child: Container(
+//            height: 48.0,
+//            width: 2.0,
+//            color: Colors.black,
+//          ),
+//        ),
 
       ],
     );
   }
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
-  @override
-  Widget build(BuildContext context) {
+  Widget userImg(BuildContext context){
+    return Padding(
+      padding: const EdgeInsets.only(right: 16.0),
+
+      child: GestureDetector(
+        child: CircleAvatar(
+          radius: 15.0,
+          backgroundImage: new CachedNetworkImageProvider(path),
+        ),
+        onTap: (){
+
+          Navigator.push<String>(super.context, new CupertinoPageRoute(builder: (BuildContext context){
+
+            return new LoginPage();
+
+          })).then( (String result){
+
+            getUserInfo();
+            getTodoFromBmob();
+
+          });
+
+        },
+      )
+
+    );
+  }
+
+  Widget iosTodoView(BuildContext context){
 
     return Scaffold(
+      floatingActionButton: new FloatingActionButton(
+        onPressed: () async {
+
+          await Navigator.push<String>(super.context, new CupertinoPageRoute(builder: (context){
+
+            return new NewTodoPage();
+
+          })).then((String value){
+            getTodoFromBmob();
+          });
+
+
+        },
+        tooltip: '悬浮按钮',
+        child: new Icon(Icons.add),
+      ),
+
+      body: CustomScrollView(
+        slivers: <Widget>[
+          CupertinoSliverNavigationBar(
+            border: Border(bottom: BorderSide.none),
+            backgroundColor: CupertinoColors.white,
+            previousPageTitle: 'Cupertino',
+            largeTitle: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: Text("待办事项"),
+                ),
+                userImg(context),
+              ],
+            ),
+          ),
+          SliverSafeArea(
+            top: false,
+
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate((BuildContext context, int index){
+                Todos model = this._items[_items.length-1-index];
+                return new Stack(
+                  children: <Widget>[
+                    new Padding(
+                      padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 5.0 ),
+                      child: new SizedBox(
+                        height: 95.0,
+                        width: double.infinity,
+
+                        child: new Card(
+
+                          elevation: 5.0,
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(8.0))
+                          ),
+
+                          child: new Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8.0),
+                              image: DecorationImage(
+                                image: AssetImage("images/img_0.png"),
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+
+                            child: new Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                new ListTile(
+
+                                  title: new Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                                    children: <Widget>[
+                                      new Text(
+                                        " ${model.title}",
+                                        style: TextStyle(
+                                            fontSize: 20.0,
+                                            fontWeight: FontWeight.bold
+                                        ),
+                                      ),
+                                      new Text(
+                                        " ${model.desc}",
+                                        style: TextStyle(
+                                            fontSize: 15.0,
+                                            fontWeight: FontWeight.bold
+                                        ),
+                                      ),
+
+                                      new Text(
+                                        "${model.date} ${model.time}",
+                                        style: TextStyle(
+                                          fontSize: 11.0,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  onTap: () {
+//                        showSnackBar(context, );
+                                  },
+                                )
+
+                              ],
+
+                            ),
+
+
+                          ),
+                        ),
+                      ),
+
+                    ),
+
+
+                  ],
+                );
+              },
+                childCount: _items.length,
+              ),
+            ),
+
+          ),
+
+        ],
+      ),
+    );
+
+  }
+
+  Widget ios(BuildContext context){
+    return CupertinoPageScaffold(
+      child: CupertinoTabScaffold(
+        tabBar: CupertinoTabBar(
+          backgroundColor: Colors.white,
+          items: [
+            BottomNavigationBarItem(title: Text("待办事项"), icon: Icon(Icons.today)),
+            BottomNavigationBarItem(title: Text("番茄时钟"), icon: Icon(Icons.access_time)),
+            BottomNavigationBarItem(title: Text("我的"), icon: Icon(Icons.account_box)),
+          ],
+        ),
+        tabBuilder: (BuildContext context, int index) {
+          return CupertinoTabView(
+
+            // ignore: missing_return
+            builder: (context) {
+              switch (index) {
+                case 0:
+                  return
+                    iosTodoView(context);
+                  break;
+              }
+            },
+          );
+        },
+
+      ),
+
+
+    );
+  }
+
+  Widget android(BuildContext context){
+    return Scaffold(
+      key: _scaffoldKey,
       appBar: new AppBar(
-        title: new Text('Do it'),
+        backgroundColor: Colors.white,
+          //AppBar渐变色
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [const Color(0xFFbdc3c7), const Color(0xFF2c3e50) ],
+              ),
+            ),
+          ),
+
+        leading: new IconButton(
+          icon: new Container(
+            padding: EdgeInsets.all(3.0),
+            child: new CircleAvatar(
+              radius: 30.0,
+              backgroundImage: new CachedNetworkImageProvider(path),
+            ),
+          ),
+          onPressed: (){
+            _scaffoldKey.currentState.openDrawer();
+          },
+        ),
+
+        title: new Text(
+          'Do it',
+
+        ),
+        elevation: 0,
         bottom: new TabBar(
           controller: _tabController,
           tabs: <Widget>[
@@ -274,7 +518,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           physics: NeverScrollableScrollPhysics(),
           padding: const EdgeInsets.only(),
           children: <Widget>[
-//        _drawerHeader,
             new UserAccountsDrawerHeader(
               decoration: BoxDecoration(
                 image: DecorationImage(
@@ -297,30 +540,39 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 ),
                 ///点击头像登录
                 onTap: (){
-                    Navigator.push<String>(context, new CupertinoPageRoute(builder: (BuildContext context){
 
-                      return new LoginPage();
+                  Navigator.push<String>(context, new CupertinoPageRoute(builder: (BuildContext context){
 
-                    })).then( (String result){
+                    return new LoginPage();
 
-                      getUserInfo();
-                      getTodoFromBmob();
+                  })).then( (String result){
 
-                    });
+                    getUserInfo();
+                    getTodoFromBmob();
+
+                  });
 
                 },
               ),
             ),
             new ClipRect(
               child: new ListTile(
-                leading: new CircleAvatar(child: new Icon(Icons.today)),
+                leading: new Icon(
+                  Icons.today,
+                  color: Colors.black54,
+                  size: 25.0,
+                ),
                 title: new Text('待办事项'),
                 onTap: () => {},
               ),
             ),
             new ClipRect(
               child: new ListTile(
-                leading: new CircleAvatar(child: new Icon(Icons.access_time)),
+                leading: new Icon(
+                  Icons.access_time,
+                  color: Colors.black54,
+                  size: 25.0,
+                ),
                 title: new Text('番茄时钟'),
                 onTap: () {
 
@@ -329,35 +581,65 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             ),
             new ClipRect(
               child: new ListTile(
-                leading: new CircleAvatar(child: new Icon(Icons.equalizer)),
+                leading: new Icon(
+                  Icons.equalizer,
+                  color: Colors.black54,
+                  size: 25.0,
+                ),
                 title: new Text('记录'),
                 onTap: () => {},
               ),
             ),
             new ClipRect(
               child: new ListTile(
-                leading: new CircleAvatar(child: new Icon(Icons.settings)),
+                leading: new Icon(
+                  Icons.settings,
+                  color: Colors.black54,
+                  size: 25.0,
+                ),
                 title: new Text('设置'),
                 onTap: () => {},
               ),
             ),
 
             new AboutListTile(
-              icon: new CircleAvatar(child: new Icon(Icons.info_outline)),
-              child: new Text("关于"),
-              applicationName: "Do it-flutter",
-              applicationVersion: "1.0",
-              applicationIcon: new Image.asset(
-                "images/user.png",
-                width: 64.0,
-                height: 64.0,
+              icon: new Icon(
+                Icons.info_outline,
+                color: Colors.black54,
+                size: 25.0,
               ),
-              applicationLegalese: "applicationLegalese",
+              child: new Text("关于"),
+              applicationName: "Do it",
+              applicationVersion: "1.0.0",
+              applicationIcon: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Image.asset(
+                  "images/app_icon.png",
+                  width: 60.0,
+                  height: 60.0,
+
+                ),
+              ),
               aboutBoxChildren: <Widget>[
-                new Text("BoxChildren"),
-                new Text("box child 2")
+                new Text("Doit Flutter版本"),
+                new Text("持续开发中..."),
               ],
             ),
+
+            new ClipRect(
+              child: new ListTile(
+                leading: new Icon(
+                  Icons.exit_to_app,
+                  color: Colors.black54,
+                  size: 25.0,
+                ),
+                title: new Text('退出登录'),
+                onTap: () => {
+
+                },
+              ),
+            ),
+
           ],
         ),
       ),
@@ -366,7 +648,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         controller: _tabController,
         children: <Widget>[
           new Center(
-              child: todoListView(context),
+            child: todoListView(context),
           ),
 
           new Center(
@@ -375,27 +657,35 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         ],
       ),
 
-      floatingActionButton: new Builder(builder: (context){
-        return new FloatingActionButton(
-          onPressed: () async {
 
-            await Navigator.push<String>(context, new CupertinoPageRoute(builder: (context){
-
-              return new NewTodoPage();
-
-            })).then((String value){
-              getTodoFromBmob();
-            });
-
-
-          },
-          tooltip: '悬浮按钮',
-          child: new Icon(Icons.add),
-        );
-      }),
+//      floatingActionButton: new FloatingActionButton(
+//          onPressed: () async {
+//
+//            await Navigator.push<String>(context, new CupertinoPageRoute(builder: (context){
+//
+//              return new NewTodoPage();
+//
+//            })).then((String value){
+//              getTodoFromBmob();
+//            });
+//
+//
+//          },
+//          tooltip: '悬浮按钮',
+//          child: new Icon(Icons.add),
+//      ),
 
 
     );
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+//    ScreenUtil.instance = ScreenUtil(width: 828, height: 1792)..init(context);
+    return defaultTargetPlatform == TargetPlatform.iOS
+        ? ios(context)
+        : android(context);
 
   }
 
@@ -410,8 +700,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 //    sp.setBool("isLogin", false);
 //  }
 
-}
 
+
+}
 
 
 

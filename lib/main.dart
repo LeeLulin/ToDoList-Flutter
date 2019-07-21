@@ -1,14 +1,24 @@
+import 'package:Doit/pages/SplashPage.dart';
+import 'package:auto_size/auto_size.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:Doit/pages/HomePage.dart';
 import 'package:Doit/pages/LoginPage.dart';
 import 'package:Doit/pages/RegisterPage.dart';
 import 'package:data_plugin/bmob/bmob.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'dart:ui' as ui show window;
+import 'dart:ui' as ui show window, PointerDataPacket;
 
 import 'db/DatabaseHelper.dart';
 
-void main() => runApp(MyApp());
+//void main() => runApp(MyApp());
+void main() => runAutoSizeApp(MyApp(), width: 414, height: 896);
 
 class MyApp extends StatelessWidget {
 
@@ -17,9 +27,33 @@ class MyApp extends StatelessWidget {
     HomePage.tag:(context)=>HomePage(),
     RegisterPage.tag:(context)=>RegisterPage(),
   };
-  @override
-  Widget build(BuildContext context) {
-    Bmob.initMasterKey("1c54d5b204e98654778c77547afc7a66", "6cb8cd3e55e7c64c70452c1a89b072b7", "");
+
+  Widget iosAppTheme(BuildContext context){
+//    ScreenUtil.instance = ScreenUtil(width: 828, height: 1792, allowFontScaling: true)..init(context);
+    return new CupertinoApp(
+      localizationsDelegates: [                             //此处
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [                                   //此处
+        const Locale('zh','CH'),
+//        const Locale('en','US'),
+      ],
+      title: 'Do it',
+      theme: new CupertinoThemeData(
+        brightness: Brightness.light,
+      ),
+
+      home: SplashPage(),
+//      home: HomePage(title: 'Do it'),
+
+      routes: routes,
+
+    );
+  }
+
+  Widget androidAppTheme(BuildContext context){
+//    ScreenUtil.instance = ScreenUtil(width: 828, height: 1792, allowFontScaling: true)..init(context);
     return new MaterialApp(
       localizationsDelegates: [                             //此处
         GlobalMaterialLocalizations.delegate,
@@ -30,17 +64,30 @@ class MyApp extends StatelessWidget {
 //        const Locale('en','US'),
       ],
       title: 'Do it',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+      theme: new ThemeData(
+        brightness: Brightness.light,
+        primaryColor: const Color(0xFF2c3e50),
+        accentColor: const Color(0xFF2c3e50),
       ),
-      home: HomePage(title: 'Do it'),
+
+      home: SplashPage(),
+//      home: HomePage(title: 'Do it'),
+
       routes: routes,
 
     );
   }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    Bmob.initMasterKey("1c54d5b204e98654778c77547afc7a66", "6cb8cd3e55e7c64c70452c1a89b072b7", "");
+
+    return defaultTargetPlatform == TargetPlatform.iOS
+        ? iosAppTheme(context)
+        : androidAppTheme(context);
+
+
+  }
 }
-
-
-
-
-
