@@ -12,15 +12,16 @@ class LoginPage extends StatefulWidget {
   _LoginPageState createState() => new _LoginPageState();
 }
 LoginErrorMessageController loginErrorMessageController=LoginErrorMessageController();
-bool loginSuccess;
-bool isLogin = false ;
-bool isRemember  = false;
+
 class _LoginPageState extends State<LoginPage> {
+  bool loginSuccess;
+  bool isLogin = false ;
   String _username, _password;
+  FocusNode nextTextFieldNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
-//    ScreenUtil.instance = ScreenUtil(width: 828, height: 1792)..init(context);
+
     final logo = new Hero(
       tag: 'hero',
       child: new CircleAvatar(
@@ -35,28 +36,36 @@ class _LoginPageState extends State<LoginPage> {
       decoration: new BoxDecoration(
         color: Colors.white, // 底色
         borderRadius: new BorderRadius.circular((5.0)), // 圆角度
-        boxShadow: [BoxShadow(color: Colors.black12, offset: Offset(2.0, 2.0), blurRadius: 2.0, spreadRadius: 2.0),],
+        boxShadow: [
+          BoxShadow(color: Colors.black12,
+              offset: Offset(2.0, 2.0),
+              blurRadius: 2.0,
+              spreadRadius: 2.0),
+        ],
 
-    ),
+      ),
       child: new Center(
-        child: new Padding(padding: new EdgeInsets.only(left: 24.0,right: 24.0),
+        child: new Padding(
+          padding: new EdgeInsets.only(left: 10.0, right: 10.0),
           child: new Column(
             children: <Widget>[
               TextField(
                 keyboardType: TextInputType.emailAddress,
                 autofocus: false,
                 decoration: new InputDecoration(
+                  prefixIcon: Icon(Icons.person),
                   labelText: '账号',
                   border: InputBorder.none,
                 ),
                 onChanged: (String value) => _username = value,
               ),
-              Divider(height: 1.0,color: Colors.black12,),
+              Divider(height: 1.0, color: Colors.black12,),
               TextField(
                 keyboardType: TextInputType.text,
                 autofocus: false,
                 obscureText: true,
-                decoration:  new InputDecoration(
+                decoration: new InputDecoration(
+                  prefixIcon: Icon(Icons.lock),
                   labelText: '密码',
                   border: InputBorder.none,
                 ),
@@ -69,13 +78,16 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
 
-
-
     var loginButton = new Container(
       decoration: new BoxDecoration(
 
         borderRadius: new BorderRadius.circular((20.0)), // 圆角度
-        boxShadow: [BoxShadow(color: Colors.black12, offset: Offset(1.0, 2.0), blurRadius: 1.0, spreadRadius: 1.0),],
+        boxShadow: [
+          BoxShadow(color: Colors.black12,
+              offset: Offset(1.0, 2.0),
+              blurRadius: 1.0,
+              spreadRadius: 1.0),
+        ],
 
       ),
       child: new AnimatedLoginButton(
@@ -92,15 +104,13 @@ class _LoginPageState extends State<LoginPage> {
           fontSize: 18.0,
         ),
         onTap: () async {
-          try{
+          try {
             FocusScope.of(context).requestFocus(FocusNode());
             print(_username);
 
-            if(_username == null || _password == null ){
+            if (_username == null || _password == null) {
               loginErrorMessageController.showErrorMessage("请输入账号或密码");
-
             } else {
-
               BmobUser bmobUserRegister = BmobUser();
               bmobUserRegister.username = _username;
               bmobUserRegister.password = _password;
@@ -108,13 +118,13 @@ class _LoginPageState extends State<LoginPage> {
                 loginSuccess = true;
                 isLogin = true;
                 print("账号: " + bmobUser.username);
-                print("用户ObjectId: "+ bmobUser.getObjectId());
+                print("用户ObjectId: " + bmobUser.getObjectId());
                 saveUserInfo(bmobUser.getObjectId());
-
               }).catchError((e) {
                 loginSuccess = false;
-                print(BmobError.convert(e).error);
-
+                print(BmobError
+                    .convert(e)
+                    .error);
               });
 
               if (loginSuccess == true) {
@@ -128,14 +138,10 @@ class _LoginPageState extends State<LoginPage> {
               } else {
                 loginErrorMessageController.showErrorMessage("账号或密码错误");
               }
-
-
             }
-
-          } catch (e){
+          } catch (e) {
             print(e.toString());
           }
-
         },
 
       ),
@@ -143,8 +149,9 @@ class _LoginPageState extends State<LoginPage> {
 
 
 
+
     final skipLogin = new FlatButton(
-      onPressed: (){
+      onPressed: () {
 //        Navigator.of(context).pushNamed(RegisterPage.tag);
         Navigator.pop(context);
       },
@@ -163,81 +170,69 @@ class _LoginPageState extends State<LoginPage> {
           image: AssetImage("images/login_bg.png"),
           fit: BoxFit.fill,),),
 
-            child: GestureDetector(
-              onTap: (){
-                FocusScope.of(context).requestFocus(FocusNode());
-              },
-              child: Scaffold(
-                resizeToAvoidBottomPadding: false,
-                backgroundColor: Colors.transparent,
-                appBar: AppBar(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  leading: Text(""),
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: Scaffold(
+          resizeToAvoidBottomPadding: false,
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: Text(""),
 //                    leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () {
 //                      //返回代码
 //
 //                    }),
 
-                  actions: <Widget>[
-                    new FlatButton(
-                      onPressed: (){
-                        Navigator.of(context).pushNamed(RegisterPage.tag);
-                      },
-                      child: new Text(
-                        '注册',
-                        style: new TextStyle(
-                            color: Colors.white,
-                            fontSize: 20.0),
-                      ),
-                    ),
-                  ],
-
-                ),
-
-                body: new Padding(padding: new EdgeInsets.only(top:120.0,left: 24.0,right: 24.0),
-
-                    child: new Column(
-//                        mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        logo,
-                        SizedBox(height: 40.0),
-                        userInfo,
-
-                        new Checkbox(
-                            value: isRemember,
-                          onChanged: (isChecked) {
-                            setState(() {
-                              isRemember = isChecked;
-                            });
-                          },
-                        ),
-                        SizedBox(height: 30.0,),
-                        loginButton,
-                        SizedBox(height: 24.0,),
-                        skipLogin,
-                      ],
-                    ),
+            actions: <Widget>[
+              new FlatButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(RegisterPage.tag);
+                },
+                child: new Text(
+                  '注册',
+                  style: new TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0),
                 ),
               ),
+            ],
+
+          ),
+
+          body: new Padding(
+            padding: new EdgeInsets.only(top: 120.0, left: 24.0, right: 24.0),
+
+            child: new Column(
+//                        mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                logo,
+                SizedBox(height: 40.0),
+                userInfo,
+                SizedBox(height: 30.0,),
+                loginButton,
+                SizedBox(height: 24.0,),
+                skipLogin,
+              ],
             ),
+          ),
+        ),
+      ),
     );
 
   }
-  saveUserInfo(String ObjectId) async{
+
+
+  saveUserInfo(String ObjectId) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     sp.setString("ObjectId", ObjectId);
     sp.setBool("isLogin", isLogin);
-    if(isRemember){
-      sp.setString("username", _username);
-      sp.setString("password", _password);
-    }
+
   }
 
+
+
+
 }
-
-
-
-
-
-

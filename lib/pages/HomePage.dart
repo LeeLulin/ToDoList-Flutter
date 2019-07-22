@@ -310,6 +310,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Widget iosTodoView(BuildContext context){
 
     return Scaffold(
+      backgroundColor: Colors.white,
       floatingActionButton: new FloatingActionButton(
         onPressed: () async {
 
@@ -346,78 +347,93 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           ),
           SliverSafeArea(
             top: false,
-
             sliver: SliverList(
+
               delegate: SliverChildBuilderDelegate((BuildContext context, int index){
                 Todos model = this._items[_items.length-1-index];
                 return new Stack(
                   children: <Widget>[
                     new Padding(
-                      padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 5.0 ),
+                      padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 10 ,bottom: 10.0 ),
                       child: new SizedBox(
-                        height: 95.0,
+                        height: 155,
                         width: double.infinity,
 
-                        child: new Card(
+                        child: new Material(
+                          color: Colors.white,
+                          elevation: 12.0,
+                          shadowColor: Colors.black54,
+                          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                          child: new Column(
+                            children: <Widget>[
 
-                          elevation: 5.0,
-                          shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(8.0))
-                          ),
-
-                          child: new Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.0),
-                              image: DecorationImage(
-                                image: AssetImage("images/img_0.png"),
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-
-                            child: new Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                new ListTile(
-
-                                  title: new Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-                                    children: <Widget>[
-                                      new Text(
-                                        " ${model.title}",
-                                        style: TextStyle(
-                                            fontSize: 20.0,
-                                            fontWeight: FontWeight.bold
-                                        ),
-                                      ),
-                                      new Text(
-                                        " ${model.desc}",
-                                        style: TextStyle(
-                                            fontSize: 15.0,
-                                            fontWeight: FontWeight.bold
-                                        ),
-                                      ),
-
-                                      new Text(
-                                        "${model.date} ${model.time}",
-                                        style: TextStyle(
-                                          fontSize: 11.0,
-                                        ),
-                                      ),
-                                    ],
+                              new AspectRatio(
+                                aspectRatio: 3.8,
+                                child: new Container(
+                                  padding: const EdgeInsets.only(left: 14.0),
+                                  alignment: Alignment.centerLeft,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(12.0),
+                                      topRight: Radius.circular(12.0),
+                                    ),
+                                    image: DecorationImage(
+                                      image: AssetImage("images/img_0.png"),
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
 
-                                  onTap: () {
-//                        showSnackBar(context, );
-                                  },
-                                )
+                                  child: new Text(
+                                    model.title == null
+                                        ? " "
+                                        : model.title,
+                                    style: TextStyle(
+                                        fontSize: 35.0,
+                                        fontWeight: FontWeight.w400
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              new Material(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12.0),
+                                child: new Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: <Widget>[
+                                    new ListTile(
+                                      title: new Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: <Widget>[
 
-                              ],
+                                          new Text(
+                                            model.desc == null
+                                                ? " "
+                                                : model.desc,
+                                            style: TextStyle(
+                                                fontSize: 15.0,
+                                                fontWeight: FontWeight.bold
+                                            ),
+                                          ),
 
-                            ),
+                                          new Text(
+                                            model.date == null
+                                                ? " "
+                                                : "${model.date} ${model.time}",
+                                            style: TextStyle(
+                                              fontSize: 11.0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
 
+                                  ],
 
+                                ),
+
+                              ),
+                            ],
                           ),
                         ),
                       ),

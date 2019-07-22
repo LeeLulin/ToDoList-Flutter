@@ -52,6 +52,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 keyboardType: TextInputType.emailAddress,
                 autofocus: false,
                 decoration: new InputDecoration(
+                  prefixIcon: Icon(Icons.person),
                   labelText: '请输入要注册的账号',
                   border: InputBorder.none,
                 ),
@@ -63,6 +64,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 autofocus: false,
                 obscureText: true,
                 decoration:  new InputDecoration(
+                  prefixIcon: Icon(Icons.lock),
                   labelText: '请输入要账号密码',
                   border: InputBorder.none,
                 ),
