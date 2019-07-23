@@ -29,7 +29,6 @@ class MyApp extends StatelessWidget {
   };
 
   Widget iosAppTheme(BuildContext context){
-//    ScreenUtil.instance = ScreenUtil(width: 828, height: 1792, allowFontScaling: true)..init(context);
     return new CupertinoApp(
       localizationsDelegates: [                             //此处
         GlobalMaterialLocalizations.delegate,
@@ -53,7 +52,6 @@ class MyApp extends StatelessWidget {
   }
 
   Widget androidAppTheme(BuildContext context){
-//    ScreenUtil.instance = ScreenUtil(width: 828, height: 1792, allowFontScaling: true)..init(context);
     return new MaterialApp(
       localizationsDelegates: [                             //此处
         GlobalMaterialLocalizations.delegate,
@@ -65,9 +63,7 @@ class MyApp extends StatelessWidget {
       ],
       title: 'Do it',
       theme: new ThemeData(
-        brightness: Brightness.light,
-        primaryColor: const Color(0xFF2c3e50),
-        accentColor: const Color(0xFF2c3e50),
+
       ),
 
       home: SplashPage(),
