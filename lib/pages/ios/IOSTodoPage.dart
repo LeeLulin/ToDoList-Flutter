@@ -119,7 +119,7 @@ class _IOSTodoPageState extends State<IOSTodoPage> {
         floatingActionButton: new FloatingActionButton(
           onPressed: () async {
             await Navigator.push<String>(
-                super.context, new CupertinoPageRoute(builder: (context) {
+                context, new CupertinoPageRoute(builder: (context) {
               return new NewTodoPage();
             })).then((String value) {
               getTodoFromBmob();
