@@ -2,15 +2,16 @@
 
 Doit Flutter版本
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## 两种界面风格
 
-A few resources to get you started if this is your first Flutter project:
+### Android
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+![主界面](https://github.com/LeeLulin/ToDoList-Flutter/blob/master/pic/IMG_0866.PNG)
+![抽屉](https://github.com/LeeLulin/ToDoList-Flutter/blob/master/pic/IMG_0867.PNG)
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+### iOS
+
+![主界面](https://github.com/LeeLulin/ToDoList-Flutter/blob/master/pic/IMG_0868.PNG)
+![新建待办](https://github.com/LeeLulin/ToDoList-Flutter/blob/master/pic/IMG_0869.PNG)
+
