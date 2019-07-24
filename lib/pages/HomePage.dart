@@ -57,11 +57,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   void initState() {
     super.initState();
 
-    getUserInfo();
-
-//    getTodoFromBmob();
-
-
     _tabController = new TabController(vsync: this, length: 2);
 
   }
@@ -287,11 +282,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     return CupertinoPageScaffold(
       child: CupertinoTabScaffold(
         tabBar: CupertinoTabBar(
-          backgroundColor: Colors.white,
+          border: Border.all(color: Colors.transparent),
+
           items: [
-            BottomNavigationBarItem(title: Text("待办事项"), icon: Icon(Icons.today)),
-            BottomNavigationBarItem(title: Text("番茄时钟"), icon: Icon(Icons.access_time)),
-            BottomNavigationBarItem(title: Text("我的"), icon: Icon(Icons.account_box)),
+            BottomNavigationBarItem(title: Text("待办事项"), icon: Icon(CupertinoIcons.collections)),
+            BottomNavigationBarItem(title: Text("番茄时钟"), icon: Icon(CupertinoIcons.clock)),
+            BottomNavigationBarItem(title: Text("我的"), icon: Icon(CupertinoIcons.person)),
           ],
         ),
         tabBuilder: (BuildContext context, int index) {
@@ -316,6 +312,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   }
 
   Widget androidTheme(BuildContext context){
+    getUserInfo();
     return Scaffold(
       key: _scaffoldKey,
       appBar: new AppBar(
@@ -508,22 +505,22 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       ),
 
 
-//      floatingActionButton: new FloatingActionButton(
-//          onPressed: () async {
-//
-//            await Navigator.push<String>(context, new CupertinoPageRoute(builder: (context){
-//
-//              return new NewTodoPage();
-//
-//            })).then((String value){
-//              getTodoFromBmob();
-//            });
-//
-//
-//          },
-//          tooltip: '按这么久干嘛',
-//          child: new Icon(Icons.add),
-//      ),
+      floatingActionButton: new FloatingActionButton(
+          onPressed: () async {
+
+            await Navigator.push<String>(context, new CupertinoPageRoute(builder: (context){
+
+              return new NewTodoPage();
+
+            })).then((String value){
+              getTodoFromBmob();
+            });
+
+
+          },
+          tooltip: '按这么久干嘛',
+          child: new Icon(Icons.add),
+      ),
 
 
     );

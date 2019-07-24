@@ -26,13 +26,14 @@ class _NewTodoPageState extends State<NewTodoPage>{
   int id,isAlerted,repeat,imgId;
 
   Widget build(BuildContext context) {
+    Todos todos = ModalRoute.of(context).settings.arguments;
 //    ScreenUtil.instance = ScreenUtil(width: 828, height: 1792)..init(context);
     return Scaffold(
       body: new SliverFab(
           ///悬浮按钮
           floatingWidget: new FloatingActionButton(
             tooltip: "按这么长时间干嘛",
-            child: new Icon(Icons.done),
+            child: new Icon(CupertinoIcons.check_mark, size: 30,),
             onPressed: () {
               saveTodoToBmob();
 
@@ -45,7 +46,7 @@ class _NewTodoPageState extends State<NewTodoPage>{
               // 展开的高度
               expandedHeight: 240.0,
               // 强制显示阴影
-              forceElevated: true,
+//              forceElevated: true,
               // 设置该属性，当有下滑手势的时候，就会显示 AppBar
               floating: true,
               // 该属性只有在 floating 为 true 的情况下使用，不然会报错
@@ -161,7 +162,8 @@ class _NewTodoPageState extends State<NewTodoPage>{
                             ],
                           ),
 
-                          new Switch(
+                          new CupertinoSwitch(
+                              activeColor: Colors.blue,
                               value: isRepeat,
                               onChanged: (bool value){
                                 setState(() {

@@ -22,14 +22,36 @@ class _SplashPageState extends State<SplashPage> {
       color: Colors.white,
       child: new Column(
         children: <Widget>[
-          new ClipRRect(
-            borderRadius: BorderRadius.circular(10.0),
-            child: Image.asset(
-              "images/app_icon.png",
-              width: 80.0,
-              height: 80.0,
+          Container(
+            width: 80.0,
+            height: 80.0,
+            decoration: BoxDecoration(
+              boxShadow: <BoxShadow>[
+                new BoxShadow(
+                  offset: Offset(5.0, 5.0),
+                  color: Colors.grey,
+                  blurRadius: 5.0,
+                ),
+              ],
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(10.0),
+              image: DecorationImage(
+                fit: BoxFit.fill,
+                image: AssetImage("images/app_icon.png"),
+              ),
             ),
           ),
+
+//          new Material(
+//
+//            elevation: 5.0,
+//            shadowColor: Colors.black54,
+//            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+//            child: Image(
+//                width: 80.0,
+//                height: 80.0,
+//                image: AssetImage("images/app_icon.png",)),
+//          ),
 
 
           new Divider(height:10.0,indent:0.0,color: Colors.transparent,),
