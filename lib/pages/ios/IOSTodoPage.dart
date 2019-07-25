@@ -17,10 +17,8 @@ import '../TodoDetailPage.dart';
 
 class IOSTodoPage extends StatefulWidget {
 
-
   @override
   _IOSTodoPageState createState() => new _IOSTodoPageState();
-
 }
 
 
@@ -125,11 +123,13 @@ class _IOSTodoPageState extends State<IOSTodoPage> with TickerProviderStateMixin
           child: new FloatingActionButton(
             tooltip: '按这么久干嘛',
             child: new Icon(CupertinoIcons.add),
-            onPressed: () async {
-              await Navigator.push<String>(
-                  context, new CupertinoPageRoute(builder: (context) {
-                return new NewTodoPage();
-              })).then((String value) {
+            onPressed: () {
+              Navigator.of(context,rootNavigator: true).push<String>(
+                  new CupertinoPageRoute(fullscreenDialog: true,builder: (BuildContext context) {
+                    return new NewTodoPage();
+                  })
+              ).then((String result){
+                getUserInfo();
                 getTodoFromBmob();
               });
             },
@@ -189,31 +189,51 @@ class _IOSTodoPageState extends State<IOSTodoPage> with TickerProviderStateMixin
     }
 
     Widget iosUserImg(BuildContext context) {
-      return Padding(
-          padding: const EdgeInsets.only(right: 16.0),
+      var _animationController = AnimationController(
+        vsync: this,
+        duration: Duration(milliseconds: 200),
+      );
+      // 缩放动画
+      var _animation = Tween<double>(begin: 1, end: 0.90).animate(_animationController);
+      return GestureDetector(
+        // 按下缩放卡片
+        onPanDown: (details) {
+          _animationController.forward();
+        },
+        // 抬起回弹卡片
+        onPanCancel: () {
+          _animationController.reverse();
+        },
+        // 手指溢出屏幕会谈卡片
+        onPanUpdate: (detials) {
+          _animationController.reverse();
+        },
+        onTap: () {
+          getIsLogin().then((bool isLogin) {
+            if (isLogin) {
 
-          child: GestureDetector(
+            } else {
+              Navigator.of(context,rootNavigator: true).push<String>(
+                  new CupertinoPageRoute(fullscreenDialog: true,builder: (BuildContext context) {
+                    return new LoginPage();
+                  })
+              ).then((String result){
+                getUserInfo();
+                getTodoFromBmob();
+              });
+            }
+          });
+        },
+        child: ScaleTransition(
+          scale: _animation,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 16.0),
             child: CircleAvatar(
               radius: 18.0,
               backgroundImage: new CachedNetworkImageProvider(path),
             ),
-            onTap: () {
-              getIsLogin().then((bool isLogin) {
-                if (isLogin) {
-
-                } else {
-                  Navigator.push<String>(context,
-                      new CupertinoPageRoute(builder: (BuildContext context) {
-                        return new LoginPage();
-                      })).then((String result) {
-                    getUserInfo();
-                    getTodoFromBmob();
-                  });
-                }
-              });
-            },
-          )
-
+          ),
+        ),
       );
     }
 
@@ -247,132 +267,169 @@ class _IOSTodoPageState extends State<IOSTodoPage> with TickerProviderStateMixin
               vsync: this,
               duration: Duration(milliseconds: 200),
             );
-            // 卡片缩放动画
+            // 缩放动画
             var _animation = Tween<double>(begin: 1, end: 0.95).animate(_animationController);
-            return new GestureDetector(
-              // 按下缩放卡片
-              onPanDown: (details) {
-                _animationController.forward();
-              },
-              // 抬起回弹卡片
-              onPanCancel: () {
-                _animationController.reverse();
-              },
-              // 手指溢出屏幕会谈卡片
-              onPanUpdate: (detials) {
-                _animationController.reverse();
-              },
-              onTap: () {
-                Navigator.of(context).push(
-                  CupertinoPageRoute(
-                      builder: (context) {
-                        return TodoDetailPage();
-                      },
-                      fullscreenDialog: true,
-                      settings: RouteSettings(arguments: model),
-                  )
-                );
-              },
-              child: Container(
-                child: ScaleTransition(
-                  scale: _animation,
-                  child: Hero(
-                    tag: model.title,
-                    child: Stack(
-                      children: <Widget>[
-                        new Padding(
-                          padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 10, bottom: 10.0),
-                          child: new SizedBox(
-                            height: 155,
-                            width: double.infinity,
-                            child: new Material(
-                              color: Colors.white,
-                              elevation: 12.0,
-                              shadowColor: Colors.black54,
-                              borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                              child: new Column(
-                                children: <Widget>[
+            return Dismissible(
+              confirmDismiss: (direction) async{
+                final bool isDelete = await showCupertinoDialog(
+                    context: context,
+                    builder: (context) {
+                      return CupertinoAlertDialog(
+                        title: Text("提示"),
+                        content: Text("确定要删除这一项吗"),
+                        actions: <Widget>[
+                          CupertinoDialogAction(
+                            child: Text("确定"),
+                            isDefaultAction: true,
+                            onPressed: () => Navigator.of(context).pop(true),
+                          ),
+                          CupertinoDialogAction(
+                            child: Text("取消"),
+                            isDestructiveAction: true,
 
-                                  new AspectRatio(
-                                    aspectRatio: 3.8,
-                                    child: new Container(
-                                      padding: const EdgeInsets.only(left: 14.0),
-                                      alignment: Alignment.centerLeft,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(12.0),
-                                          topRight: Radius.circular(12.0),
-                                        ),
-                                        image: DecorationImage(
-                                          image: AssetImage("images/img_0.png"),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-
-                                      child: new Text(
-                                        model.title == null
-                                            ? " "
-                                            : model.title,
-                                        style: TextStyle(
-                                            fontSize: 35.0,
-                                            fontWeight: FontWeight.w400
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  new Material(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12.0),
-                                    child: new Column(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: <Widget>[
-                                        new ListTile(
-                                          title: new Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                            children: <Widget>[
-
-                                              new Text(
-                                                model.desc == null
-                                                    ? " "
-                                                    : model.desc,
-                                                style: TextStyle(
-                                                    fontSize: 15.0,
-                                                    fontWeight: FontWeight.bold
-                                                ),
-                                              ),
-
-                                              new Text(
-                                                model.date == null
-                                                    ? " "
-                                                    : "${model.date} ${model
-                                                    .time}",
-                                                style: TextStyle(
-                                                  fontSize: 11.0,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-
-                                      ],
-                                    ),
-
-                                  ),
-                                ],
-                              ),
-                            ),
+                            onPressed: () => Navigator.of(context).pop(false),
                           ),
 
-                        ),
-
-                      ],
-                    ),
-                  ),
-
-                ),
+                        ],
+                      );
+                    });
+                return isDelete;
+              },
+              key: new Key(model.objectId),
+              direction: DismissDirection.endToStart,
+              background: new Container(color: Colors.transparent),
+              secondaryBackground: new IconButton(
+                  icon: Icon(CupertinoIcons.delete_simple, size: 30.0,),
+                  onPressed: null,
               ),
+//              onDismissed: (direction){
+//
+//              },
+              child: GestureDetector(
+                // 按下缩放卡片
+                onPanDown: (details) {
+                  _animationController.forward();
+                },
+                // 抬起回弹卡片
+                onPanCancel: () {
+                  _animationController.reverse();
+                },
+                // 手指溢出屏幕会谈卡片
+                onPanUpdate: (detials) {
+                  _animationController.reverse();
+                },
+                onTap: () {
+                  Navigator.of(context,rootNavigator: true).push(
+                      CupertinoPageRoute(
+                        builder: (context) {
+                          return TodoDetailPage();
+                        },
+                        fullscreenDialog: true,
+                        settings: RouteSettings(arguments: model),
+                      )
+                  );
+                },
+                child: Container(
+                  child: ScaleTransition(
+                    scale: _animation,
+                    child: Hero(
+                      tag: model.title,
+                      child: Stack(
+                        children: <Widget>[
+                          new Padding(
+                            padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 10, bottom: 10.0),
+                            child: new SizedBox(
+                              height: 155,
+                              width: double.infinity,
+                              child: new Material(
+                                color: Colors.white,
+                                elevation: 12.0,
+                                shadowColor: Colors.black54,
+                                borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                                child: new Column(
+                                  children: <Widget>[
 
+                                    new AspectRatio(
+                                      aspectRatio: 3.8,
+                                      child: new Container(
+                                        padding: const EdgeInsets.only(left: 14.0),
+                                        alignment: Alignment.centerLeft,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(12.0),
+                                            topRight: Radius.circular(12.0),
+                                          ),
+                                          image: DecorationImage(
+                                            image: AssetImage("images/img_1.png"),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+
+                                        child: new Text(
+                                          model.title == null
+                                              ? " "
+                                              : model.title,
+                                          style: TextStyle(
+                                              fontSize: 35.0,
+                                              fontWeight: FontWeight.w400
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    new Material(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(12.0),
+                                      child: new Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: <Widget>[
+                                          new ListTile(
+                                            title: new Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: <Widget>[
+
+                                                new Text(
+                                                  model.desc == null
+                                                      ? " "
+                                                      : model.desc,
+                                                  style: TextStyle(
+                                                      fontSize: 15.0,
+                                                      fontWeight: FontWeight.bold
+                                                  ),
+                                                ),
+
+                                                new Text(
+                                                  model.date == null
+                                                      ? " "
+                                                      : "${model.date} ${model
+                                                      .time}",
+                                                  style: TextStyle(
+                                                    fontSize: 11.0,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+
+                                        ],
+                                      ),
+
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                          ),
+
+                        ],
+                      ),
+                    ),
+
+                  ),
+                ),
+
+              ),
             );
             },
             childCount: _items.length,

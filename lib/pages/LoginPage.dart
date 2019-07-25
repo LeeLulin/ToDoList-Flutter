@@ -22,15 +22,11 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
 
-    final logo = new Hero(
-      tag: 'hero',
-      child: new CircleAvatar(
-        backgroundColor: Colors.transparent,
-        radius: 48.0,
-        child: new Image.asset('images/do_it.png'),
-      ),
+    final logo = new CircleAvatar(
+      backgroundColor: Colors.transparent,
+      radius: 48.0,
+      child: new Image.asset('images/do_it.png'),
     );
-
     final userInfo = new Container(
 //      height: 120.0,
       decoration: new BoxDecoration(
@@ -163,59 +159,59 @@ class _LoginPageState extends State<LoginPage> {
           decoration: TextDecoration.underline,),),
     );
 
-    return new Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.0),
-        image: DecorationImage(
-          image: AssetImage("images/login_bg.png"),
-          fit: BoxFit.fill,),),
+    return Scaffold(
+      body: Hero(
+        tag: "login",
+        child: new Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
+            image: DecorationImage(
+              image: AssetImage("images/login_bg.png"),
+              fit: BoxFit.fill,),),
 
-      child: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-        },
-        child: Scaffold(
-          resizeToAvoidBottomPadding: false,
-          backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: Text(""),
-//                    leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: () {
-//                      //返回代码
-//
-//                    }),
+          child: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).requestFocus(FocusNode());
+            },
+            child: Scaffold(
+              resizeToAvoidBottomPadding: false,
+              backgroundColor: Colors.transparent,
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
 
-            actions: <Widget>[
-              new FlatButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed(RegisterPage.tag);
-                },
-                child: new Text(
-                  '注册',
-                  style: new TextStyle(
-                      color: Colors.white,
-                      fontSize: 20.0),
+                actions: <Widget>[
+                  new FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(RegisterPage.tag);
+                    },
+                    child: new Text(
+                      '注册',
+                      style: new TextStyle(
+                          color: Colors.white,
+                          fontSize: 20.0),
+                    ),
+                  ),
+                ],
+
+              ),
+
+              body: new Container(
+                padding: new EdgeInsets.only(top: 140.0, left: 24.0, right: 24.0),
+
+                child: new Column(
+                  children: <Widget>[
+                    logo,
+                    SizedBox(height: 40.0),
+                    userInfo,
+                    SizedBox(height: 30.0,),
+                    loginButton,
+                    SizedBox(height: 24.0,),
+                    skipLogin,
+                  ],
                 ),
               ),
-            ],
-
-          ),
-
-          body: new Padding(
-            padding: new EdgeInsets.only(top: 120.0, left: 24.0, right: 24.0),
-
-            child: new Column(
-//                        mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                logo,
-                SizedBox(height: 40.0),
-                userInfo,
-                SizedBox(height: 30.0,),
-                loginButton,
-                SizedBox(height: 24.0,),
-                skipLogin,
-              ],
             ),
           ),
         ),

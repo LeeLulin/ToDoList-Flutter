@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: [                             //此处
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
+        const FallbackCupertinoLocalisationsDelegate(),
       ],
       supportedLocales: [                                   //此处
         const Locale('zh','CH'),
@@ -56,6 +57,7 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: [                             //此处
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
+        const FallbackCupertinoLocalisationsDelegate(),
       ],
       supportedLocales: [                                   //此处
         const Locale('zh','CH'),
@@ -86,4 +88,19 @@ class MyApp extends StatelessWidget {
 
 
   }
+}
+
+class FallbackCupertinoLocalisationsDelegate
+    extends LocalizationsDelegate<CupertinoLocalizations> {
+  const FallbackCupertinoLocalisationsDelegate();
+
+  @override
+  bool isSupported(Locale locale) => true;
+
+  @override
+  Future<CupertinoLocalizations> load(Locale locale) =>
+      DefaultCupertinoLocalizations.load(locale);
+
+  @override
+  bool shouldReload(FallbackCupertinoLocalisationsDelegate old) => false;
 }

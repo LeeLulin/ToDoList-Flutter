@@ -26,6 +26,7 @@ class _AndroidTodoPageState extends State<AndroidTodoPage> {
   int localTodos;
   var db = DatabaseHelper();
   bool loadComplete = false;
+  TabController _tabController;
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
   @override
@@ -102,6 +103,19 @@ class _AndroidTodoPageState extends State<AndroidTodoPage> {
     });
 
   }
+
+  Future<bool> getIsLogin() async{
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    bool isLogin = sp.get("isLogin");
+    if(isLogin){
+      print("登录状态：已登录");
+      return true;
+    } else{
+      print("登录状态：未登录");
+      return false;
+    }
+  }
+
 
 
   Widget todoListView(BuildContext context) {
