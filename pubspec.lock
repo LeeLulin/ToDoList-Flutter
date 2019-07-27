@@ -106,18 +106,18 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.8"
+  flutter_cupertino_settings:
+    dependency: "direct main"
+    description:
+      name: flutter_cupertino_settings
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.0"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_screenutil:
-    dependency: "direct main"
-    description:
-      name: flutter_screenutil
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.5.3"
   flutter_spinkit:
     dependency: transitive
     description:
@@ -137,6 +137,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.2.11"
+  font_awesome_flutter:
+    dependency: "direct main"
+    description:
+      name: font_awesome_flutter
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "8.5.0"
   http:
     dependency: transitive
     description:

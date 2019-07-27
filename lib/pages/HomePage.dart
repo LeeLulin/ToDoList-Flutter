@@ -10,7 +10,6 @@ import 'package:data_plugin/bmob/table/bmob_user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -326,114 +325,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
       ),
 
 
-    );
-  }
-
-  Widget iosHeader(BuildContext context){
-    var _animationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 200),
-    );
-    // 缩放动画
-    var _animation = Tween<double>(begin: 1, end: 0.95).animate(_animationController);
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            ScaleTransition(
-              scale: _animation,
-              child: Hero(
-                tag: "login",
-                child: Container(
-                  padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
-                  child: Material(
-                    color: Colors.white,
-                    elevation: 16.0,
-                    shadowColor: Colors.black54,
-                    borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                    child: Container(
-                      padding: const EdgeInsets.all(15.0),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.0),
-                        image: DecorationImage(
-                          image: AssetImage("images/img_0.png"),
-                          fit: BoxFit.fill,
-                        ),
-                      ),
-                      child: Column(
-                        children: <Widget>[
-                          GestureDetector(
-                            // 按下缩放卡片
-                            onPanDown: (details) {
-                              _animationController.forward();
-                            },
-                            // 抬起回弹卡片
-                            onPanCancel: () {
-                              _animationController.reverse();
-                            },
-                            // 手指溢出屏幕会谈卡片
-                            onPanUpdate: (detials) {
-                              _animationController.reverse();
-                            },
-                            onTap: () {
-                              getIsLogin().then((bool isLogin) {
-                                if (isLogin) {
-                                  Navigator.of(context,rootNavigator: true).push<String>(
-                                      new CupertinoPageRoute(fullscreenDialog: true,builder: (BuildContext context) {
-                                        return new LoginPage();
-                                      })
-                                  ).then((String result){
-                                    getUserInfo();
-                                    getTodoFromBmob();
-                                  });
-                                } else {
-                                  Navigator.push<String>(context,
-                                      new CupertinoPageRoute(builder: (BuildContext context) {
-                                        return new LoginPage();
-                                      })).then((String result) {
-                                    getUserInfo();
-                                    getTodoFromBmob();
-                                  });
-                                }
-                              });
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: CircleAvatar(
-                                radius: 40.0,
-                                backgroundImage: new CachedNetworkImageProvider(path),
-                              ),
-                            ),
-
-                          ),
-
-                          Text(nickName,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 25.0,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-
-                          Text(autograph,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-          ],
-        ),
-      ),
     );
   }
 

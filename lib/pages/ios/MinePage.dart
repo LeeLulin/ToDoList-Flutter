@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../HomePage.dart';
 import '../LoginPage.dart';
+import 'SettingPage.dart';
 
 class MinePage extends StatefulWidget {
   @override
@@ -156,6 +157,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin{
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
+                    //设置按钮
                     GestureDetector(
                       onPanDown: (details) {
                         _animationController.forward();
@@ -169,7 +171,15 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin{
                         _animationController.reverse();
                       },
                       onTap: (){
-
+                        Navigator.of(context,rootNavigator: true).push<String>(
+                            new CupertinoPageRoute(fullscreenDialog: true, builder: (BuildContext context) {
+                              return new SettingPage();
+                            })
+                        ).then((String result){
+                          setState(() {
+                            getUserInfo();
+                          });
+                        });
                       },
                       child: Icon(Icons.settings, size: 25.0, color: Colors.black54,),
                     )

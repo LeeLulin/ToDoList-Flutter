@@ -160,6 +160,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: Hero(
         tag: "login",
         child: new Container(

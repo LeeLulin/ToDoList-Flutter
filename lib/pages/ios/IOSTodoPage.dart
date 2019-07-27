@@ -92,11 +92,13 @@ class _IOSTodoPageState extends State<IOSTodoPage> with TickerProviderStateMixin
           print(todo.desc);
         }
       }
-//      _items = netTodo;
-      setState(() {
-        _items = netTodo;
-        loadComplete = true;
-      });
+      if(data.length != 0){
+        setState(() {
+          _items = netTodo;
+          loadComplete = true;
+        });
+      }
+
     }).catchError((e) {
       print(BmobError
           .convert(e)
@@ -107,12 +109,12 @@ class _IOSTodoPageState extends State<IOSTodoPage> with TickerProviderStateMixin
     Future<bool> getIsLogin() async {
       SharedPreferences sp = await SharedPreferences.getInstance();
       bool isLogin = sp.get("isLogin");
-      if (isLogin) {
-        print("登录状态：已登录");
-        return true;
-      } else {
+      if (isLogin == false || isLogin == null) {
         print("登录状态：未登录");
         return false;
+      } else {
+        print("登录状态：已登录");
+        return true;
       }
     }
 
@@ -125,7 +127,7 @@ class _IOSTodoPageState extends State<IOSTodoPage> with TickerProviderStateMixin
             child: new Icon(CupertinoIcons.add),
             onPressed: () {
               Navigator.of(context,rootNavigator: true).push<String>(
-                  new CupertinoPageRoute(fullscreenDialog: true,builder: (BuildContext context) {
+                  new CupertinoPageRoute(fullscreenDialog: true, builder: (BuildContext context) {
                     return new NewTodoPage();
                   })
               ).then((String result){
@@ -239,11 +241,15 @@ class _IOSTodoPageState extends State<IOSTodoPage> with TickerProviderStateMixin
 
     ///加载前
     Widget _beforeDataLoaded(){
-    if(_items == null){
+    if(_items.length == 0){
       return new SliverFillRemaining(
         child: Center(
-          child: Text("点击右下角按钮新建待办"),
-        )
+          child: Text(
+            "空空如也\n点击右下角按钮新建待办",
+            style: TextStyle(color: Colors.black54),
+            textAlign: TextAlign.center,
+          ),
+        ),
       );
     } else{
       return new SliverFillRemaining(

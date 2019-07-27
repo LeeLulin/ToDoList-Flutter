@@ -9,7 +9,6 @@ import 'package:Doit/pages/LoginPage.dart';
 import 'package:Doit/pages/RegisterPage.dart';
 import 'package:data_plugin/bmob/bmob.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:ui' as ui show window;

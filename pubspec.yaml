@@ -32,8 +32,12 @@ dependencies:
   #日期选择器
   flutter_cupertino_date_picker: ^1.0.8
   #屏幕适配
-  flutter_screenutil: ^0.5.3
-
+  #flutter_screenutil: ^0.5.3
+  #setting page
+  flutter_cupertino_settings: ^0.1.0
+  #Icon
+  font_awesome_flutter: ^8.5.0
+  #屏幕适配
   auto_size:
     git:
       url: git://github.com/flutterchina/auto_size.git
