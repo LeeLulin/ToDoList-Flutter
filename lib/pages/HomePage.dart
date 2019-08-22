@@ -127,15 +127,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   }
 
-  Future<bool> getIsLogin() async{
+  Future<bool> getIsLogin() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     bool isLogin = sp.get("isLogin");
-    if(isLogin){
-      print("登录状态：已登录");
-      return true;
-    } else{
+    if (isLogin == false || isLogin == null) {
       print("登录状态：未登录");
       return false;
+    } else {
+      print("登录状态：已登录");
+      return true;
     }
   }
 

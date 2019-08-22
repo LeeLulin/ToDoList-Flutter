@@ -106,17 +106,17 @@ class _IOSTodoPageState extends State<IOSTodoPage> with TickerProviderStateMixin
     });
   }
 
-    Future<bool> getIsLogin() async {
-      SharedPreferences sp = await SharedPreferences.getInstance();
-      bool isLogin = sp.get("isLogin");
-      if (isLogin == false || isLogin == null) {
-        print("登录状态：未登录");
-        return false;
-      } else {
-        print("登录状态：已登录");
-        return true;
-      }
+  Future<bool> getIsLogin() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    bool isLogin = sp.get("isLogin");
+    if (isLogin == false || isLogin == null) {
+      print("登录状态：未登录");
+      return false;
+    } else {
+      print("登录状态：已登录");
+      return true;
     }
+  }
 
     Widget iosTodoView(BuildContext context) {
       return Scaffold(
@@ -151,32 +151,7 @@ class _IOSTodoPageState extends State<IOSTodoPage> with TickerProviderStateMixin
                     padding: const EdgeInsets.only(left: 12.0),
                     child: Text("待办事项"),
                   ),
-//                  FloatingActionButton(
-//                    onPressed: () async {
-//                      await Navigator.push<String>(
-//                          context, new CupertinoPageRoute(builder: (context) {
-//                        return new NewTodoPage();
-//                      })).then((String value) {
-//                        getTodoFromBmob();
-//                      });
-//                    },
-//                    tooltip: '悬浮按钮',
-//                    child: new Icon(Icons.add),
-//                  ),
-//                  FlatButton(
-//
-//                    shape: CircleBorder(),
-//                    color: Colors.black87,
-//                    child: Icon(Icons.add,color: Colors.white, size: 20.0,),
-//                    onPressed: () async {
-//                      await Navigator.push<String>(
-//                          context, new CupertinoPageRoute(builder: (context) {
-//                        return new NewTodoPage();
-//                      })).then((String value) {
-//                        getTodoFromBmob();
-//                      });
-//                    },
-//                  ),
+
                   iosUserImg(context),
                 ],
               ),
@@ -184,7 +159,7 @@ class _IOSTodoPageState extends State<IOSTodoPage> with TickerProviderStateMixin
             ///加载指示器
             loadComplete
                 ? _dataLoadComplete(context)
-                : _beforeDataLoaded()
+                : _loginTip()
           ],
         ),
       );
@@ -237,6 +212,26 @@ class _IOSTodoPageState extends State<IOSTodoPage> with TickerProviderStateMixin
           ),
         ),
       );
+    }
+
+    Widget _loginTip(){
+    bool flag = false;
+    getIsLogin().then((bool isLogin){
+      flag = isLogin;
+    });
+    if(flag){
+      return _beforeDataLoaded();
+    } else {
+      return new SliverFillRemaining(
+        child: Center(
+          child: Text(
+            "未登录\n点击右上角登录或注册账号",
+            style: TextStyle(color: Colors.black54),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
     }
 
     ///加载前
