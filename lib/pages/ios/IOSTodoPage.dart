@@ -159,7 +159,7 @@ class _IOSTodoPageState extends State<IOSTodoPage> with TickerProviderStateMixin
             ///加载指示器
             loadComplete
                 ? _dataLoadComplete(context)
-                : _loginTip()
+                : _beforeDataLoaded()
           ],
         ),
       );
@@ -236,11 +236,17 @@ class _IOSTodoPageState extends State<IOSTodoPage> with TickerProviderStateMixin
 
     ///加载前
     Widget _beforeDataLoaded(){
+      bool flag = false;
+      getIsLogin().then((bool isLogin){
+        flag = isLogin;
+      });
     if(_items.length == 0){
       return new SliverFillRemaining(
         child: Center(
           child: Text(
-            "空空如也\n点击右下角按钮新建待办",
+            flag
+                ? "未登录\n点击右上角登录或注册账号"
+                : "空空如也\n点击右下角按钮新建待办",
             style: TextStyle(color: Colors.black54),
             textAlign: TextAlign.center,
           ),

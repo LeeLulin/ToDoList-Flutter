@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'LoginPage.dart';
 import 'NewTodoPage.dart';
+import 'ios/IOSTomatoPage.dart';
 import 'ios/MinePage.dart';
 
 class HomePage extends StatefulWidget {
@@ -305,17 +306,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
             builder: (context) {
               switch (index) {
                 case 0:
-                  return
-                    IOSTodoPage();
+                  return IOSTodoPage();
                   break;
 
                 case 1:
-
+                  return IOSTomatoPage();
                   break;
 
                 case 2:
-                  return
-                    MinePage();
+                  return MinePage();
                   break;
               }
             },
