@@ -4,6 +4,7 @@ import 'package:Doit/db/DatabaseHelper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:data_plugin/bmob/bmob_query.dart';
 import 'package:data_plugin/bmob/response/bmob_error.dart';
+import 'package:data_plugin/bmob/table/bmob_user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,16 +19,17 @@ class MinePage extends StatefulWidget {
 
 }
 class _MinePageState extends State<MinePage> with TickerProviderStateMixin{
-  var _items = [];
+  List<User> _items = [];
   int localTodos;
   var db = DatabaseHelper();
-  List<int> items = List.generate(10, (i) => i); // 产生数据
+  String total;
 
   @override
   void initState() {
     super.initState();
 
     getUserInfo();
+    getUserListFromBmob();
 
 //    getTodoFromBmob();
 
@@ -63,38 +65,22 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin{
     }
   }
 
-  ///查询待办事项
-  void getTodoFromBmob() async {
-    localTodos = await db.getCount();
-//    db.clearTodo();
-    print("localTodo: " + localTodos.toString());
-//    db.close();
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    String objectId = sp.get("ObjectId");
-    BmobQuery<Todos> query = BmobQuery();
-    query.addWhereEqualTo("user", objectId);
+  void getUserListFromBmob() async{
+    BmobQuery<User> query = BmobQuery();
+    query.setOrder("total");
     query.queryObjects().then((List<dynamic> data) {
-      List<Todos> netTodo = data.map((i) => Todos.fromJson(i)).toList();
-      print("查询到 " + netTodo.length.toString() + " 条数据");
-      int index = 0;
-      for (Todos todo in netTodo) {
-        index++;
-        if (todo != null) {
-          print(index);
-          print(todo.objectId);
-          print(todo.title);
-          print(todo.desc);
+      List<User> users = data.map((i) => User.fromJson(i)).toList();
+      for (User blog in users) {
+        if (blog != null) {
+          print(blog.nickName);
+          print(blog.total);
         }
+        setState(() {
+          _items = users;
+        });
       }
-//      _items = netTodo;
-      setState(() {
-        _items = netTodo;
-//        loadComplete = true;
-      });
     }).catchError((e) {
-      print(BmobError
-          .convert(e)
-          .error);
+      print(BmobError.convert(e).error);
     });
   }
 
@@ -406,6 +392,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin{
   }
 
   Widget rankCard(BuildContext context){
+
     return Material(
         borderRadius: BorderRadius.circular(12.0),
         shadowColor: Colors.black54,
@@ -436,12 +423,22 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin{
             backgroundColor: Colors.transparent,
             body: Scrollbar(
                 child: ListView.builder(
-                  itemCount: items.length,
+                  itemCount: _items.length,
                   itemBuilder: (context,int index){
                     return ListTile(
-                      leading: new CircleAvatar(backgroundImage: AssetImage("images/user.png"),),
-                      trailing: Text("${index + 1}"),
-                      title: Text("User Name"),
+                      leading: new CircleAvatar(
+                        backgroundImage: CachedNetworkImageProvider(
+                            _items[_items.length - 1 - index].img.url.toString() == null
+                                ? "images/user.png"
+                                : _items[_items.length - 1 - index].img.url.toString()
+                        ),
+                      ),
+                      title: Text(
+                          _items[_items.length - 1 - index].nickName == null
+                              ? "UserName"
+                              : _items[_items.length - 1 - index].nickName
+                      ),
+                      trailing: Text("${_items[_items.length - 1 - index].total}分钟"),
                     );
                   },
                 ),

@@ -104,7 +104,7 @@ class _NewTomatoPageState extends State<NewTomatoPage>{
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Container(
-                            width: 340.0,
+                            width: 330.0,
                             child: CupertinoSlider(
                               min: 0.0,
                               max: 100.0,
@@ -126,7 +126,7 @@ class _NewTomatoPageState extends State<NewTomatoPage>{
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Container(
-                            width: 340.0,
+                            width: 330.0,
                             child: CupertinoSlider(
                               min: 0.0,
                               max: 100.0,
@@ -148,7 +148,7 @@ class _NewTomatoPageState extends State<NewTomatoPage>{
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Container(
-                            width: 340.0,
+                            width: 330.0,
                             child: CupertinoSlider(
                               min: 0.0,
                               max: 100.0,
@@ -170,7 +170,7 @@ class _NewTomatoPageState extends State<NewTomatoPage>{
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Container(
-                            width: 340.0,
+                            width: 330.0,
                             child: CupertinoSlider(
                               min: 0.0,
                               max: 10.0,

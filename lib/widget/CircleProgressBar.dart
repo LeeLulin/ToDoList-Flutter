@@ -1,3 +1,8 @@
+import 'dart:async';
+
+import 'package:Doit/utils/ValueNotifierData.dart';
+import 'package:common_utils/common_utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 
@@ -11,8 +16,10 @@ class CircleProgressBar extends StatefulWidget {
   final double startNumber;
   final double maxNumber;
   final TextStyle textStyle;
+  final ValueNotifierData data;
 
   const CircleProgressBar(
+      this.data,
       this.size, {
         this.backgroundColor = Colors.grey,
         this.foreColor = Colors.blueAccent,
@@ -30,11 +37,15 @@ class CircleProgressBar extends StatefulWidget {
   }
 }
 
-class CircleProgressBarState extends State<CircleProgressBar>
-    with SingleTickerProviderStateMixin {
+class CircleProgressBarState extends State<CircleProgressBar> with SingleTickerProviderStateMixin {
   Animation<double> _doubleAnimation;
   AnimationController _animationController;
   CurvedAnimation curve;
+  bool _play = false, _stop = true;
+  Timer _timer;
+  int seconds;
+  String info;
+
 
   @override
   void initState() {
@@ -42,16 +53,15 @@ class CircleProgressBarState extends State<CircleProgressBar>
     _animationController = new AnimationController(
         vsync: this, duration: Duration(milliseconds: widget.duration));
 
-    curve = new CurvedAnimation(
-        parent: _animationController, curve: Curves.decelerate);
-    _doubleAnimation =
-        new Tween(begin: widget.startNumber, end: widget.maxNumber)
-            .animate(curve);
+    curve = new CurvedAnimation(parent: _animationController, curve: Curves.decelerate);
+    _doubleAnimation = new Tween(begin: widget.startNumber, end: widget.maxNumber).animate(curve);
 
     _animationController.addListener(() {
       setState(() {});
     });
-    onAnimationStart();
+    seconds = widget.duration ~/ 1000;
+    widget.data.addListener(_handleValueChanged);
+//    onAnimationStart();
   }
 
   @override
@@ -65,33 +75,137 @@ class CircleProgressBarState extends State<CircleProgressBar>
 
   @override
   void dispose() {
-    super.dispose();
     _animationController.dispose();
+    super.dispose();
   }
+
+  void startTimer() {
+    //设置 1 秒回调一次
+    const period = const Duration(seconds: 1);
+    _timer = Timer.periodic(period, (timer) {
+      //更新界面
+      setState(() {
+        //秒数减一，因为一秒回调一次
+        seconds--;
+      });
+      if (seconds == 0) {
+        //倒计时秒数为0，取消定时器
+        cancelTimer();
+      }
+    });
+  }
+
+  void cancelTimer() {
+    if (_timer != null) {
+      _timer.cancel();
+      _timer = null;
+    }
+  }
+
+  void _handleValueChanged() {
+    cancelTimer();
+  }
+
 
   @override
   Widget build(BuildContext context) {
     var percent = (_doubleAnimation.value / widget.maxNumber * 100).round();
-    return Container(
-        width: widget.size,
-        height: widget.size,
-        child: CustomPaint(
-          painter: CircleProgressBarPainter(
-              widget.backgroundColor,
-              widget.foreColor,
-              widget.startNumber / widget.maxNumber * 360,
-              _doubleAnimation.value / widget.maxNumber * 360,
-              widget.maxNumber / widget.maxNumber * 360,
-              widget.strokeWidth),
-          size: Size(widget.size, widget.size),
-          child: Center(
-            child: Text(
-                "${_doubleAnimation.value.round() == widget.maxNumber ? "完成" : "${widget.textPercent ? "$percent%" : "${_doubleAnimation.value.round()}/${widget.maxNumber.round()}"}"}",
-                style: widget.textStyle == null
-                    ? TextStyle(color: Colors.black, fontSize: 20)
-                    : widget.textStyle),
+    var countDownTime = widget.duration - (widget.duration * percent * 0.01);
+    return Column(
+      children: <Widget>[
+        Container(
+          width: widget.size,
+          height: widget.size,
+          child: CustomPaint(
+            painter: CircleProgressBarPainter(
+                widget.backgroundColor,
+                widget.foreColor,
+                widget.startNumber / widget.maxNumber * 360,
+                _doubleAnimation.value / widget.maxNumber * 360,
+                widget.maxNumber / widget.maxNumber * 360,
+                widget.strokeWidth),
+            size: Size(widget.size, widget.size),
+            child: Center(
+              child: Text(
+                "${DateUtil.formatDateMs(
+                    seconds * 1000,
+                    format: "mm:ss")}",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 50.0,
+                ),
+//                "${_doubleAnimation.value.round() == widget.maxNumber ? "完成" : "${widget.textPercent ? "$percent%" : "${_doubleAnimation.value.round()}/${widget.maxNumber.round()}"}"}",
+//                style: widget.textStyle == null
+//                    ? TextStyle(color: Colors.black, fontSize: 20)
+//                    : widget.textStyle,
+              ),
+            ),
           ),
-        ));
+        ),
+        Center(
+          child: Stack(
+            children: <Widget>[
+              Offstage(
+                offstage: _play,
+                child: Container(
+                  padding: const EdgeInsets.only(top: 80.0 ),
+                  child: IconButton(
+                    onPressed: (){
+                      onAnimationStart();
+                      startTimer();
+                      setState(() {
+                        _play = true;
+                        _stop = false;
+                      });
+                    },
+                    icon: Icon(CupertinoIcons.play_arrow_solid, color: Colors.white),
+                    iconSize: 40.0,
+                  ),
+                ),
+              ),
+              Offstage(
+                offstage: _stop,
+                child: Container(
+                  padding: const EdgeInsets.only(top: 80.0 ),
+                  child: IconButton(
+                    onPressed: (){
+                      showCupertinoDialog(
+                          context: context,
+                          builder: (context) {
+                            return CupertinoAlertDialog(
+                              title: Text("提示"),
+                              content: Text("番茄钟将作废"),
+                              actions: <Widget>[
+                                CupertinoDialogAction(
+                                  child: Text("确定"),
+                                  isDefaultAction: true,
+                                  onPressed: () {
+                                    cancelTimer();
+                                    Navigator.pop(context);
+                                    Navigator.of(super.context).pop(true);
+                                  },
+                                ),
+                                CupertinoDialogAction(
+                                  child: Text("取消"),
+                                  isDestructiveAction: true,
+
+                                  onPressed: () => Navigator.of(super.context).pop(false),
+                                ),
+
+                              ],
+                            );
+                          });
+                    },
+                    icon: Icon(Icons.stop, color: Colors.white),
+                    iconSize: 40.0,
+                  ),
+                ),
+              ),
+            ],
+          )
+        ),
+      ],
+    );
   }
 }
 
@@ -129,7 +243,10 @@ class CircleProgressBarPainter extends CustomPainter {
     Rect rect = Rect.fromCircle(center: Offset(radius, radius), radius: radius);
 
     canvas.drawCircle(Offset(radius, radius), radius, _paintBckGround);
-    canvas.drawArc(rect, _startAngle / 180 * 3.14, _sweepAngle / 180 * 3.14,
+    canvas.drawArc(rect,
+        -3.14/2,
+//        _startAngle / 180 * 3.14,
+        _sweepAngle / 180 * 3.14,
         false, _paintFore);
   }
 

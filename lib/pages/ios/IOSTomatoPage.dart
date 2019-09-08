@@ -387,18 +387,18 @@ class _IOSTomatoPageState extends State<IOSTomatoPage> with TickerProviderStateM
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: <Widget>[
                                         new ListTile(
-                                          title: new Column(
+                                          title: new Row(
                                             crossAxisAlignment: CrossAxisAlignment.end,
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            mainAxisAlignment: MainAxisAlignment.end,
                                             children: <Widget>[
-
                                               new Text(
-                                                '累计 0',
+                                                "${model.workLength}分钟",
                                                 style: TextStyle(
                                                     fontSize: 15.0,
                                                     fontWeight: FontWeight.bold
                                                 ),
                                               ),
+
 
                                             ],
                                           ),

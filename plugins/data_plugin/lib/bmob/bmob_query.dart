@@ -265,7 +265,8 @@ class BmobQuery<T> {
   Future<List<dynamic>> queryObjects() async {
     String tableName = T.toString();
 
-    if (T is BmobUser) {
+//    if (T is BmobUser) {
+    if (tableName == "User") {
       tableName = "_User";
     } else if (T.runtimeType is BmobInstallation) {
       tableName = "_Installation";
