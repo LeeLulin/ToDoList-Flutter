@@ -47,6 +47,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
   int localTodos;
   var db = DatabaseHelper();
   TabController _tabController;
+  int total;
 
 
   @override
@@ -70,25 +71,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
     if(objectId != null){
       BmobQuery<User> bmobQuery = BmobQuery();
       bmobQuery.queryObject(objectId).then((data) {
-
+        User user = User.fromJson(data);
         setState(() {
-          User user = User.fromJson(data);
           nickName = user.nickName;
           autograph = user.autograph;
+
           if(user.img.url.toString() != null){
             path = user.img.url.toString();
           }
 
         });
-
-
+        sp.setString("nickname", nickName);
+        sp.setString("autograph", autograph);
+        sp.setString("userImg", path);
+        sp.setInt("total", total);
         print("昵称："+nickName+" 个性签名: "+autograph+" 头像url：" + path);
       }).catchError((e) {
         print("Error: " + BmobError.convert(e).error);
       });
-      sp.setString("nickname", nickName);
-      sp.setString("autograph", autograph);
-      sp.setString("userImg", path);
 
     }
   }

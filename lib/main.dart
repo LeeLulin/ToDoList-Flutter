@@ -79,7 +79,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Bmob.initMasterKey("1c54d5b204e98654778c77547afc7a66", "6cb8cd3e55e7c64c70452c1a89b072b7", "");
+    Bmob.initMasterKey("1c54d5b204e98654778c77547afc7a66", "6cb8cd3e55e7c64c70452c1a89b072b7", "0b36d2814315c58babd40282a1d52115");
 
     return defaultTargetPlatform == TargetPlatform.iOS
         ? iosAppTheme(context)

@@ -55,8 +55,6 @@ class _IOSTodoPageState extends State<IOSTodoPage> with TickerProviderStateMixin
             path = user.img.url.toString();
           }
         });
-
-
         print("昵称：" + nickName + " 个性签名: " + autograph + " 头像url：" + path);
       }).catchError((e) {
         print("Error: " + BmobError

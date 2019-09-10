@@ -30,6 +30,7 @@ class _IOSTomatoPageState extends State<IOSTomatoPage> with TickerProviderStateM
   int localTodos;
   var db = DatabaseHelper();
   bool loadComplete = false;
+  int total;
 
   @override
   void initState() {
@@ -42,32 +43,33 @@ class _IOSTomatoPageState extends State<IOSTomatoPage> with TickerProviderStateM
 
   }
 
-  void getUserInfo() async {
+  void getUserInfo() async{
     SharedPreferences sp = await SharedPreferences.getInstance();
     objectId = sp.get("ObjectId");
     isLogin = sp.get("isLogin");
-    if (objectId != null) {
+    if(objectId != null){
       BmobQuery<User> bmobQuery = BmobQuery();
       bmobQuery.queryObject(objectId).then((data) {
+        User user = User.fromJson(data);
+        total = user.total;
         setState(() {
-          User user = User.fromJson(data);
           nickName = user.nickName;
           autograph = user.autograph;
-          if (user.img.url.toString() != null) {
+          if(user.img.url.toString() != null){
             path = user.img.url.toString();
           }
+
         });
+        sp.setString("nickname", nickName);
+        sp.setString("autograph", autograph);
+        sp.setString("userImg", path);
+        sp.setInt("total", total);
 
-
-        print("昵称：" + nickName + " 个性签名: " + autograph + " 头像url：" + path);
+        print("昵称："+nickName+" 个性签名: "+autograph+" 头像url：" + path + " Total: $total");
       }).catchError((e) {
-        print("Error: " + BmobError
-            .convert(e)
-            .error);
+        print("Error: " + BmobError.convert(e).error);
       });
-      sp.setString("nickname", nickName);
-      sp.setString("autograph", autograph);
-      sp.setString("userImg", path);
+
     }
   }
 
@@ -326,7 +328,7 @@ class _IOSTomatoPageState extends State<IOSTomatoPage> with TickerProviderStateM
                 Navigator.of(context,rootNavigator: true).push(
                     CupertinoPageRoute(
                       builder: (context) {
-                        return ClockPage();
+                        return ClockPage(wLength: model.workLength);
                       },
                       fullscreenDialog: true,
                       settings: RouteSettings(arguments: model),

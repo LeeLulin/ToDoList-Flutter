@@ -2,6 +2,7 @@ import 'package:Doit/bean/Todos.dart';
 import 'package:Doit/bean/user.dart';
 import 'package:Doit/db/DatabaseHelper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:common_utils/common_utils.dart';
 import 'package:data_plugin/bmob/bmob_query.dart';
 import 'package:data_plugin/bmob/response/bmob_error.dart';
 import 'package:data_plugin/bmob/table/bmob_user.dart';
@@ -22,7 +23,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin{
   List<User> _items = [];
   int localTodos;
   var db = DatabaseHelper();
-  String total;
+  int total;
 
   @override
   void initState() {
@@ -40,6 +41,10 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin{
     SharedPreferences sp = await SharedPreferences.getInstance();
     objectId = sp.get("ObjectId");
     isLogin = sp.get("isLogin");
+    total = sp.getInt("total");
+//    if(total == null){
+//      total = 0;
+//    }
     if (objectId != null) {
       BmobQuery<User> bmobQuery = BmobQuery();
       bmobQuery.queryObject(objectId).then((data) {
@@ -52,16 +57,16 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin{
           }
         });
 
-
-        print("昵称：" + nickName + " 个性签名: " + autograph + " 头像url：" + path);
+        sp.setString("nickname", nickName);
+        sp.setString("autograph", autograph);
+        sp.setString("userImg", path);
+        print("昵称："+nickName+" 个性签名: "+autograph+" 头像url：" + path + " Total: $total");
       }).catchError((e) {
         print("Error: " + BmobError
             .convert(e)
             .error);
       });
-      sp.setString("nickname", nickName);
-      sp.setString("autograph", autograph);
-      sp.setString("userImg", path);
+
     }
   }
 
@@ -96,21 +101,6 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin{
     }
   }
 
-  Widget title(BuildContext context){
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          GestureDetector(
-            onTap: (){
-
-            },
-            child: Icon(Icons.settings, size: 30.0, color: Colors.black,),
-          )
-        ],
-      ),
-    );
-  }
 
   Widget mineHeader(BuildContext context){
     var _animationController = AnimationController(
@@ -299,7 +289,7 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin{
                   ],
                 ),
                 SizedBox(height: 10.0,),
-                Text("累计：3小时52分钟",
+                Text("累计：$total分钟",
                   style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.w300

@@ -1,9 +1,13 @@
 import 'dart:async';
 
+import 'package:Doit/bean/user.dart';
 import 'package:Doit/utils/ValueNotifierData.dart';
 import 'package:common_utils/common_utils.dart';
+import 'package:data_plugin/bmob/response/bmob_error.dart';
+import 'package:data_plugin/bmob/response/bmob_updated.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class CircleProgressBar extends StatefulWidget {
@@ -45,11 +49,14 @@ class CircleProgressBarState extends State<CircleProgressBar> with SingleTickerP
   Timer _timer;
   int seconds;
   String info;
+  int total;
+  String objectId;
 
 
   @override
   void initState() {
     super.initState();
+    getUserTotal();
     _animationController = new AnimationController(
         vsync: this, duration: Duration(milliseconds: widget.duration));
 
@@ -64,10 +71,10 @@ class CircleProgressBarState extends State<CircleProgressBar> with SingleTickerP
 //    onAnimationStart();
   }
 
-  @override
-  void reassemble() {
-    onAnimationStart();
-  }
+//  @override
+//  void reassemble() {
+//    onAnimationStart();
+//  }
 
   onAnimationStart() {
     _animationController.forward(from: widget.startNumber);
@@ -76,6 +83,7 @@ class CircleProgressBarState extends State<CircleProgressBar> with SingleTickerP
   @override
   void dispose() {
     _animationController.dispose();
+    cancelTimer();
     super.dispose();
   }
 
@@ -91,6 +99,16 @@ class CircleProgressBarState extends State<CircleProgressBar> with SingleTickerP
       if (seconds == 0) {
         //倒计时秒数为0，取消定时器
         cancelTimer();
+
+        User user = User();
+        user.objectId = objectId;
+        user.total = total + (widget.duration ~/ 1000 ~/ 60);
+        user.update().then((BmobUpdated bmobUpdated){
+          print("update success");
+        }).catchError((e){
+          print(BmobError.convert(e).error);
+        });
+
       }
     });
   }
@@ -106,6 +124,12 @@ class CircleProgressBarState extends State<CircleProgressBar> with SingleTickerP
     cancelTimer();
   }
 
+  void getUserTotal() async{
+  SharedPreferences sp = await SharedPreferences.getInstance();
+  objectId = sp.getString("ObjectId");
+  total = sp.getInt("total");
+  print("ObjectId: " + objectId + " Total: $total");
+}
 
   @override
   Widget build(BuildContext context) {
