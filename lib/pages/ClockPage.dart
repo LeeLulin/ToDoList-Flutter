@@ -7,7 +7,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ClockPage extends StatefulWidget {
   final int wLength;
-  ClockPage({@required this.wLength});
+  final String title;
+  ClockPage({@required this.wLength,this.title});
 
   @override
   _ClockPageState createState() => new _ClockPageState();
@@ -15,15 +16,17 @@ class ClockPage extends StatefulWidget {
 }
 
 class _ClockPageState extends State<ClockPage>{
-  double workLength = 1.0;
+  double workLength = 25.0;
   double shortBreak = 5.0;
   double longBreak = 20.0;
   double frequency = 4.0;
+  String _title;
 
   @override
   void initState() {
 
     workLength = (widget.wLength).toDouble();
+    _title = widget.title;
     super.initState();
   }
   Widget build(BuildContext context){
@@ -134,6 +137,7 @@ class _ClockPageState extends State<ClockPage>{
                           maxNumber: 100,
                           duration: workLength.toInt() * 60 * 1000,
                           textPercent: true,
+                          title: _title,
                         ),
                       ),
                     ),

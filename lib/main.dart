@@ -13,11 +13,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:ui' as ui show window;
 import 'dart:ui' as ui show window, PointerDataPacket;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'db/DatabaseHelper.dart';
 
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
 //void main() => runApp(MyApp());
-void main() => runAutoSizeApp(MyApp(), width: 414, height: 896);
+void main() {
+  flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  runAutoSizeApp(MyApp(), width: 414, height: 896);
+
+}
 
 class MyApp extends StatelessWidget {
 
@@ -26,6 +33,9 @@ class MyApp extends StatelessWidget {
     HomePage.tag:(context)=>HomePage(),
     RegisterPage.tag:(context)=>RegisterPage(),
   };
+
+
+
 
   Widget iosAppTheme(BuildContext context){
     return new CupertinoApp(
@@ -85,9 +95,12 @@ class MyApp extends StatelessWidget {
         ? iosAppTheme(context)
         : androidAppTheme(context);
 
-
   }
+
+
 }
+
+
 
 class FallbackCupertinoLocalisationsDelegate
     extends LocalizationsDelegate<CupertinoLocalizations> {

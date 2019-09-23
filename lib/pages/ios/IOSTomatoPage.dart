@@ -328,7 +328,7 @@ class _IOSTomatoPageState extends State<IOSTomatoPage> with TickerProviderStateM
                 Navigator.of(context,rootNavigator: true).push(
                     CupertinoPageRoute(
                       builder: (context) {
-                        return ClockPage(wLength: model.workLength);
+                        return ClockPage(wLength: model.workLength, title: model.title);
                       },
                       fullscreenDialog: true,
                       settings: RouteSettings(arguments: model),

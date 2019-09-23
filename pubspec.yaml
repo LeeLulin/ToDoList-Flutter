@@ -39,6 +39,8 @@ dependencies:
   font_awesome_flutter: ^8.5.0
   #常用工具类库
   common_utils: ^1.1.3
+  #通知插件
+  flutter_local_notifications: 0.8.3
   #屏幕适配
   auto_size:
     git:

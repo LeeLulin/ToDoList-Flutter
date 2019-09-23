@@ -1,13 +1,17 @@
 import 'dart:async';
 
 import 'package:Doit/bean/user.dart';
+import 'package:Doit/pages/ClockPage.dart';
 import 'package:Doit/utils/ValueNotifierData.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:data_plugin/bmob/response/bmob_error.dart';
 import 'package:data_plugin/bmob/response/bmob_updated.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../main.dart';
 
 
 class CircleProgressBar extends StatefulWidget {
@@ -21,6 +25,7 @@ class CircleProgressBar extends StatefulWidget {
   final double maxNumber;
   final TextStyle textStyle;
   final ValueNotifierData data;
+  final String title;
 
   const CircleProgressBar(
       this.data,
@@ -33,6 +38,7 @@ class CircleProgressBar extends StatefulWidget {
         this.startNumber = 0.0,
         this.maxNumber = 360,
         this.textPercent = true,
+        this.title
       });
 
   @override
@@ -68,6 +74,14 @@ class CircleProgressBarState extends State<CircleProgressBar> with SingleTickerP
     });
     seconds = widget.duration ~/ 1000;
     widget.data.addListener(_handleValueChanged);
+    var initializationSettingsAndroid =
+    AndroidInitializationSettings('app_icon');
+    var initializationSettingsIOS = IOSInitializationSettings(
+        onDidReceiveLocalNotification: onDidReceiveLocalNotification);
+    var initializationSettings = InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
 //    onAnimationStart();
   }
 
@@ -99,7 +113,11 @@ class CircleProgressBarState extends State<CircleProgressBar> with SingleTickerP
       if (seconds == 0) {
         //倒计时秒数为0，取消定时器
         cancelTimer();
-
+        _showNotification();
+        setState(() {
+          _play = false;
+          _stop = true;
+        });
         User user = User();
         user.objectId = objectId;
         user.total = total + (widget.duration ~/ 1000 ~/ 60);
@@ -122,6 +140,59 @@ class CircleProgressBarState extends State<CircleProgressBar> with SingleTickerP
 
   void _handleValueChanged() {
     cancelTimer();
+  }
+
+  Future<void> onDidReceiveLocalNotification(
+      int id, String title, String body, String payload) async {
+    // display a dialog with the notification details, tap ok to go to another page
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: Text(title),
+        content: Text(body),
+        actions: [
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            child: Text('Ok'),
+            onPressed: () async {
+              Navigator.of(context, rootNavigator: true).pop();
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ClockPage(wLength: widget.duration~/60~/1000, title: widget.title),
+                ),
+              );
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  Future<void> onSelectNotification(String payload) async {
+    if (payload != null) {
+      debugPrint('notification payload: ' + payload);
+    }
+
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ClockPage()),
+    );
+  }
+
+  Future _showNotification() async {
+    //安卓的通知配置，必填参数是渠道id, 名称, 和描述, 可选填通知的图标，重要度等等。
+    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+        '1', 'com.lulin.ToDoList-Flutter', 'todolist',
+        importance: Importance.Max, priority: Priority.High);
+    //IOS的通知配置
+    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+    var platformChannelSpecifics = new NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    //显示通知，其中 0 代表通知的 id，用于区分通知。
+    await flutterLocalNotificationsPlugin.show(
+        0, widget.title, '番茄钟结束，休息一下吧！', platformChannelSpecifics,
+        payload: 'complete');
   }
 
   void getUserTotal() async{
