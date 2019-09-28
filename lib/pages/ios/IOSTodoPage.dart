@@ -2,8 +2,10 @@ import 'package:Doit/bean/Todos.dart';
 import 'package:Doit/bean/user.dart';
 import 'package:Doit/db/DatabaseHelper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:data_plugin/bmob/bmob.dart';
 import 'package:data_plugin/bmob/bmob_query.dart';
 import 'package:data_plugin/bmob/response/bmob_error.dart';
+import 'package:data_plugin/bmob/response/bmob_handled.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -286,7 +288,16 @@ class _IOSTodoPageState extends State<IOSTodoPage> with TickerProviderStateMixin
                           CupertinoDialogAction(
                             child: Text("确定"),
                             isDefaultAction: true,
-                            onPressed: () => Navigator.of(context).pop(true),
+                            onPressed: (){
+                              Navigator.of(context).pop(true);
+                              Todos todos = Todos();
+                              todos.objectId = model.objectId;
+                              todos.delete().then((BmobHandled bmobHandeled){
+                                print("删除 ${model.title} 成功");
+                              }).catchError((e){
+                                print(BmobError.convert(e).error);
+                              });
+                            }
                           ),
                           CupertinoDialogAction(
                             child: Text("取消"),

@@ -176,7 +176,7 @@ class CircleProgressBarState extends State<CircleProgressBar> with SingleTickerP
 
     await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ClockPage()),
+      MaterialPageRoute(builder: (context) => ClockPage(wLength: widget.duration~/60~/1000, title: widget.title)),
     );
   }
 
