@@ -15,7 +15,27 @@ def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
     flutterVersionCode = '1'
 }
-
+configurations.all {
+    resolutionStrategy {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'androidx.core') {
+                details.useVersion "1.0.1"
+            }
+            if (details.requested.group == 'androidx.lifecycle') {
+                details.useVersion "2.0.0"
+            }
+            if (details.requested.group == 'androidx.versionedparcelable') {
+                details.useVersion "1.0.0"
+            }
+            if (details.requested.group == 'androidx.fragment') {
+                details.useVersion "1.0.0"
+            }
+            if (details.requested.group == 'androidx.appcompat') {
+                details.useVersion "1.0.1"
+            }
+        }
+    }
+}
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
     flutterVersionName = '1.0'

@@ -424,9 +424,14 @@ class _MinePageState extends State<MinePage> with TickerProviderStateMixin{
                         ),
                       ),
                       title: Text(
-                          _items[_items.length - 1 - index].nickName == null
+                        _items[_items.length - 1 - index].nickName == null
                               ? "UserName"
-                              : _items[_items.length - 1 - index].nickName
+                              : _items[_items.length - 1 - index].nickName,
+                        style: TextStyle(
+                            color: _items[_items.length - 1 - index].objectId == objectId
+                                ? Colors.blue
+                                : Colors.black
+                        ),
                       ),
                       trailing: Text("${_items[_items.length - 1 - index].total}分钟"),
                     );

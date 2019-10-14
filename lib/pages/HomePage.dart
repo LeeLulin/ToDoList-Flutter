@@ -606,11 +606,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin{
 
   @override
   Widget build(BuildContext context) {
-//    return iosTheme(context);
+    return iosTheme(context);
 //    return androidTheme(context);
-    return defaultTargetPlatform == TargetPlatform.iOS
-        ? iosTheme(context)
-        : androidTheme(context);
+//    return defaultTargetPlatform == TargetPlatform.iOS
+//        ? iosTheme(context)
+//        : androidTheme(context);
 
   }
 
